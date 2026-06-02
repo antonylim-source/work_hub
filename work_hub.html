@@ -861,6 +861,7 @@ function showToast(txt){
 
 // ── 탭 전환 ──
 function switchTab(name, btn){
+  _activeTab = name;
   $(".tab-panel").removeClass("active");
   $(".tab-btn").removeClass("active");
   $("#tab-"+name).addClass("active");
@@ -878,6 +879,7 @@ function toggleCard(head){
 }
 
 // ── 검색 ──
+var _activeTab = "work"; // 현재 활성 탭 추적
 // 검색 인덱스 빌드 (링크 텍스트 + href 수집)
 var searchIndex = [];
 function buildIndex(){
@@ -901,7 +903,13 @@ function buildIndex(){
 
 function doSearch(q){
   q = q.trim();
-  if(!q){ $("#search-panel").removeClass("visible"); return; }
+  if(!q){
+    $("#search-panel").removeClass("visible");
+    $(".tab-panel").removeClass("active");
+    $("#tab-"+_activeTab).addClass("active");
+    $("#side-nav").css("display", _activeTab==="work" ? "flex" : "none");
+    return;
+  }
   buildIndex();
   var results = searchIndex.filter(function(item){
     return item.txt.toLowerCase().indexOf(q.toLowerCase()) >= 0
@@ -937,7 +945,9 @@ $(document).on("keydown", function(e){
   if(e.key === "Escape"){
     $("#search-box").val("");
     $("#search-panel").removeClass("visible");
-    $("#tab-work").addClass("active");
+    $(".tab-panel").removeClass("active");
+    $("#tab-"+_activeTab).addClass("active");
+    $("#side-nav").css("display", _activeTab==="work" ? "flex" : "none");
   }
 });
 </script>
