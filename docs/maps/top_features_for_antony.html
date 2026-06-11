@@ -1,0 +1,124 @@
+
+<style>
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;padding:4px 0}
+.feat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:18px 20px;cursor:pointer;transition:border-color .15s}
+.feat-card:hover{border-color:var(--color-border-secondary)}
+.feat-card.tier1{border-left:3px solid #1D9E75;border-radius:0 var(--border-radius-lg) var(--border-radius-lg) 0}
+.feat-card.tier2{border-left:3px solid #378ADD;border-radius:0 var(--border-radius-lg) var(--border-radius-lg) 0}
+.feat-card.tier3{border-left:3px solid #888780;border-radius:0 var(--border-radius-lg) var(--border-radius-lg) 0}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.card-left{display:flex;align-items:center;gap:10px}
+.icon-wrap{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.icon-wrap.g{background:#E1F5EE;color:#0F6E56}
+.icon-wrap.b{background:#E6F1FB;color:#185FA5}
+.icon-wrap.gr{background:#F1EFE8;color:#5F5E5A}
+.card-name{font-size:14px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
+.card-sub{font-size:12px;color:var(--color-text-secondary);margin-top:1px}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.badge.hot{background:#E1F5EE;color:#085041}
+.badge.mid{background:#E6F1FB;color:#0C447C}
+.badge.low{background:#F1EFE8;color:#444441}
+.card-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:10px}
+.example{background:var(--color-background-secondary);border-radius:8px;padding:8px 12px;font-size:11.5px;color:var(--color-text-secondary);line-height:1.5;font-style:italic}
+.example strong{color:var(--color-text-primary);font-weight:500;font-style:normal}
+.section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-tertiary);margin:20px 0 8px}
+.section-label:first-child{margin-top:4px}
+button.try-btn{margin-top:10px;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:4px}
+button.try-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+</style>
+
+<h2 class="sr-only">Antony의 업무에 가장 강력한 Claude 기능 우선순위 목록</h2>
+
+<div class="section-label">즉시 ROI — 매일 쓸수록 시간이 쌓이는 것들</div>
+<div class="grid">
+
+<div class="feat-card tier1">
+  <div class="card-top">
+    <div class="card-left">
+      <div class="icon-wrap g"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+      <div><div class="card-name">문서 자동 생성 + GitHub push</div><div class="card-sub">방금 만든 도구 활용</div></div>
+    </div>
+    <span class="badge hot">최고 우선</span>
+  </div>
+  <div class="card-desc">M.A.P.S. 기술 검토서, 회의 결과, 스프린트 요약 — 대화 후 바로 HTML 문서화하고 Pages에 올리는 흐름. 지금까지 수동으로 하던 작업이 가장 많이 줄어드는 영역.</div>
+  <div class="example"><strong>사용 예:</strong> "오늘 이동훈 상무님과 나눈 M.A.P.S. 논의 내용 기술 검토 문서로 정리해줘"</div>
+  <button class="try-btn" onclick="sendPrompt('M.A.P.S. Activity 3 Morpheme Laser Cutter 개발 현황을 기술 검토 문서로 정리해줘')">바로 써보기 ↗</button>
+</div>
+
+<div class="feat-card tier1">
+  <div class="card-top">
+    <div class="card-left">
+      <div class="icon-wrap g"><i class="ti ti-code" aria-hidden="true"></i></div>
+      <div><div class="card-name">Cursor 프롬프트 설계 파트너</div><div class="card-sub">Morpheme Laser Cutter 개발</div></div>
+    </div>
+    <span class="badge hot">최고 우선</span>
+  </div>
+  <div class="card-desc">TypeScript + React 19 + Vite 8.x 스택으로 Activity 3 개발 중인 상황에서, 각 Cursor 프롬프트 단계를 여기서 먼저 설계하면 실수가 줄고 품질이 높아짐. 8단계 프롬프팅 가이드의 각 단계별 구체화에 활용.</div>
+  <div class="example"><strong>사용 예:</strong> "레이저 사냥꾼 형태소 경계 감지 로직, Touch Events API로 구현하는 Cursor 프롬프트 짜줘"</div>
+  <button class="try-btn" onclick="sendPrompt('Morpheme Laser Cutter의 형태소 경계 터치 감지 기능을 Cursor에서 구현하기 위한 단계별 프롬프트 설계해줘')">바로 써보기 ↗</button>
+</div>
+
+</div>
+
+<div class="section-label">커뮤니케이션 — 직급간 소통 비용 절감</div>
+<div class="grid">
+
+<div class="feat-card tier2">
+  <div class="card-top">
+    <div class="card-left">
+      <div class="icon-wrap b"><i class="ti ti-mail" aria-hidden="true"></i></div>
+      <div><div class="card-name">보고 이메일 자동 초안</div><div class="card-sub">Gmail 직접 연동</div></div>
+    </div>
+    <span class="badge mid">고우선</span>
+  </div>
+  <div class="card-desc">이동훈 상무님 보고, PIVOT팀 협업 요청, 정성화 대리 안내 등 — 상대방 직급과 맥락에 맞는 어조로 초안을 만들고 Gmail에 바로 저장.</div>
+  <div class="example"><strong>사용 예:</strong> "PIVOT팀에 AI Playground 접속 권한 요청 메일, 업무 협조 공문 스타일로 써줘"</div>
+  <button class="try-btn" onclick="sendPrompt('이동훈 상무님께 M.A.P.S. 1분기 개발 진행 현황 보고 이메일 초안 작성해줘')">바로 써보기 ↗</button>
+</div>
+
+<div class="feat-card tier2">
+  <div class="card-top">
+    <div class="card-left">
+      <div class="icon-wrap b"><i class="ti ti-history" aria-hidden="true"></i></div>
+      <div><div class="card-name">과거 대화 검색으로 맥락 복원</div><div class="card-sub">결정사항·기술 논의 이어가기</div></div>
+    </div>
+    <span class="badge mid">고우선</span>
+  </div>
+  <div class="card-desc">NAC 개편 논의, 기술 스택 결정, Excel 도구 설계 등 이전에 나눈 내용을 새 대화에서도 바로 이어갈 수 있음. "저번에 논의한 ~" 하면 자동 검색.</div>
+  <div class="example"><strong>사용 예:</strong> "저번에 논의했던 Activity 우선순위 결정 근거 다시 찾아줘"</div>
+  <button class="try-btn" onclick="sendPrompt('M.A.P.S. 4개 Activity 개발 우선순위 결정했던 내용 찾아줘')">바로 써보기 ↗</button>
+</div>
+
+</div>
+
+<div class="section-label">레버리지 — 한 번 만들면 계속 쓰는 것들</div>
+<div class="grid">
+
+<div class="feat-card tier3">
+  <div class="card-top">
+    <div class="card-left">
+      <div class="icon-wrap gr"><i class="ti ti-table" aria-hidden="true"></i></div>
+      <div><div class="card-name">Excel 관리 도구 자동 생성</div><div class="card-sub">IT 리소스·계정 관리대장</div></div>
+    </div>
+    <span class="badge low">중우선</span>
+  </div>
+  <div class="card-desc">READI 계정 관리대장, IT 리소스 마스터 등 반복적으로 만드는 Excel 파일을 요구사항만 말하면 자동 생성. 드롭다운·조건부 서식·자동필터까지.</div>
+  <div class="example"><strong>사용 예:</strong> "온라인테스트 서버 계정 관리 Excel, 힌트 방식으로 비번 관리하는 구조로 만들어줘"</div>
+  <button class="try-btn" onclick="sendPrompt('poly-ot.com 서버 계정 관리 Excel 파일 만들어줘. 비밀번호는 힌트만 저장하는 방식으로.')">바로 써보기 ↗</button>
+</div>
+
+<div class="feat-card tier3">
+  <div class="card-top">
+    <div class="card-left">
+      <div class="icon-wrap gr"><i class="ti ti-brain" aria-hidden="true"></i></div>
+      <div><div class="card-name">기술 의사결정 검증</div><div class="card-sub">스택·아키텍처 트레이드오프</div></div>
+    </div>
+    <span class="badge low">중우선</span>
+  </div>
+  <div class="card-desc">Azure Speech vs 온디바이스, DALL-E 3 사전생성 vs 실시간 생성 등 — 결정 전에 트레이드오프를 빠르게 정리하고 상무님 보고용 근거 자료 생성.</div>
+  <div class="example"><strong>사용 예:</strong> "Activity 2 발음 평가에 Azure Speech MVP vs Web Speech API, 비용·정확도·오프라인 기준으로 비교해줘"</div>
+  <button class="try-btn" onclick="sendPrompt('M.A.P.S. Activity 2 발음 평가: Azure Speech Services vs Web Speech API 기술 비교 분석해줘')">바로 써보기 ↗</button>
+</div>
+
+</div>
