@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M.A.P.S. Activity 3 — Morpheme Laser Cutter 기술 검토서</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --surface: #f8f7f4;
+    --border: #e8e6e0;
+    --text: #1a1917;
+    --muted: #6b6962;
+    --accent: #d97706;
+    --accent-light: #fef3c7;
+    --accent-dark: #92400e;
+    --teal: #0f6e56;
+    --teal-light: #e1f5ee;
+    --red: #991b1b;
+    --red-light: #fef2f2;
+    --blue: #1e40af;
+    --blue-light: #eff6ff;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    font-size: 14px;
+    line-height: 1.75;
+    padding: 0;
+  }
+
+  /* Cover */
+  .cover {
+    background: #1a1917;
+    color: #fff;
+    padding: 56px 64px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(217,119,6,0.15);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 40%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(217,119,6,0.08);
+  }
+  .cover-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #d97706;
+    margin-bottom: 16px;
+  }
+  .cover h1 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover h1 span { color: #fbbf24; }
+  .cover-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .meta-item { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .meta-item strong { color: rgba(255,255,255,0.85); font-weight: 500; display: block; font-size: 13px; }
+
+  .cover-badges { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .cbadge {
+    font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .cbadge-gold { background: #d97706; color: #fff; }
+  .cbadge-green { background: #065f46; color: #6ee7b7; border: 1px solid #047857; }
+  .cbadge-gray  { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.15); }
+
+  /* Body layout */
+  .body { max-width: 860px; margin: 0 auto; padding: 52px 48px 80px; }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 48px;
+  }
+  .toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 4px 24px; }
+  .toc-item { font-size: 13px; color: var(--muted); padding: 3px 0; display: flex; gap: 10px; }
+  .toc-num { color: var(--accent); font-weight: 700; font-size: 12px; min-width: 20px; }
+
+  /* Section */
+  .section { margin-bottom: 52px; }
+  .sec-header {
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+  }
+  .sec-num { font-size: 12px; font-weight: 800; color: var(--accent); letter-spacing: 0.08em; }
+  .sec-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+
+  h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 24px 0 10px; }
+  h3::before { content: '▸ '; color: var(--accent); font-size: 12px; }
+
+  p { margin-bottom: 10px; color: var(--muted); font-size: 14px; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* Info box */
+  .infobox {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--accent-dark);
+    line-height: 1.65;
+  }
+  .infobox.teal { background: var(--teal-light); border-color: var(--teal); color: #064e3b; }
+  .infobox.red  { background: var(--red-light);  border-color: var(--red);  color: #7f1d1d; }
+  .infobox.blue { background: var(--blue-light); border-color: var(--blue); color: #1e3a8a; }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+  .card-value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); line-height: 1.1; }
+  .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Table */
+  .spec-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .spec-table th {
+    background: #1a1917; color: #fff;
+    text-align: left; padding: 10px 14px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .spec-table th:first-child { border-radius: 6px 0 0 0; }
+  .spec-table th:last-child  { border-radius: 0 6px 0 0; }
+  .spec-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+  .spec-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-table tr:nth-child(even) td { background: var(--surface); }
+
+  code { font-family: var(--mono); font-size: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; color: var(--accent-dark); }
+
+  /* Diff table */
+  .diff-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .diff-table th { background: var(--surface); padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 2px solid var(--border); text-align: left; }
+  .diff-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .diff-table td:first-child { font-weight: 600; color: var(--text); }
+  .diff-table .easy  td:first-child { color: var(--teal); }
+  .diff-table .normal td:first-child { color: var(--blue); }
+  .diff-table .hard  td:first-child { color: var(--red); }
+
+  /* Stack badges */
+  .stack-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .stack-badge {
+    font-size: 12px; font-weight: 600; padding: 5px 12px;
+    border-radius: 6px; border: 1px solid;
+  }
+  .sb-confirmed { background: var(--teal-light); color: #065f46; border-color: #6ee7b7; }
+  .sb-pending   { background: #fef9c3; color: #713f12; border-color: #fde68a; }
+  .sb-future    { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
+
+  /* Timeline */
+  .timeline { margin: 20px 0; }
+  .tl-item { display: flex; gap: 16px; margin-bottom: 4px; align-items: flex-start; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
+  .tl-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .tl-line { width: 2px; flex: 1; background: var(--border); margin-top: 4px; min-height: 20px; }
+  .tl-item:last-child .tl-line { display: none; }
+  .tl-phase { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: center; margin-top: 2px; }
+  .tl-body { padding-bottom: 20px; flex: 1; }
+  .tl-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .tl-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .tl-weeks { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+  .tl-green { background: var(--teal-light); color: #065f46; }
+  .tl-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .tl-gray  { background: var(--surface); color: var(--muted); }
+
+  /* Issue/Solution blocks */
+  .issue-block {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+  .issue-head { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; font-weight: 600; }
+  .issue-head.problem { background: var(--red-light); color: var(--red); }
+  .issue-head.solution { background: var(--teal-light); color: var(--teal); }
+  .issue-body { padding: 12px 16px; font-size: 13px; color: var(--muted); line-height: 1.65; border-top: 1px solid var(--border); background: var(--bg); }
+
+  /* QA checklist */
+  .qa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px; margin: 12px 0; }
+  .qa-item { display: flex; gap: 10px; align-items: flex-start; background: var(--surface); border-radius: 8px; padding: 10px 14px; font-size: 13px; }
+  .qa-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; }
+  .qa-check.ok { background: var(--teal); border-color: var(--teal); color: #fff; font-size: 10px; }
+  .qa-check.pending { background: var(--accent-light); border-color: var(--accent); }
+  .qa-text { color: var(--muted); line-height: 1.5; }
+  .qa-text strong { color: var(--text); }
+
+  /* Decision log */
+  .decision-row { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+  .decision-label { background: #1a1917; color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 12px 14px; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; min-width: 36px; display: flex; align-items: center; justify-content: center; }
+  .decision-body { padding: 12px 16px; flex: 1; font-size: 13px; }
+  .decision-old { color: var(--red); text-decoration: line-through; margin-bottom: 4px; }
+  .decision-new { color: var(--teal); font-weight: 600; }
+  .decision-why { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Doc nav */
+  .doc-nav {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    padding: 12px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    max-width: 860px; margin: 0 auto;
+  }
+  .doc-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px;
+    transition: all .15s;
+  }
+  .doc-nav a:hover { color: var(--accent-dark); border-color: var(--accent); background: var(--accent-light); }
+  .related-link {
+    margin: 14px 0; padding: 10px 14px;
+    background: var(--blue-light); border-left: 3px solid var(--blue);
+    border-radius: 0 8px 8px 0; font-size: 12px; color: #1e3a8a; line-height: 1.6;
+  }
+  .related-link a { color: var(--blue); font-weight: 600; text-decoration: none; }
+  .related-link a:hover { text-decoration: underline; }
+
+  /* Footer */
+  footer {
+    max-width: 860px; margin: 0 auto;
+    padding: 24px 48px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted);
+  }
+
+  @media (max-width: 640px) {
+    .cover { padding: 36px 24px 32px; }
+    .doc-nav { padding: 12px 20px; }
+    .body { padding: 36px 20px 60px; }
+    footer { padding: 20px 20px 40px; flex-direction: column; gap: 8px; }
+    .card-value { font-size: 18px; }
+  }
+  @media print {
+    .cover::before, .cover::after { display: none; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="cover-eyebrow">POLY M.A.P.S. · ATLAS AI Product Team</div>
+  <div class="cover-badges">
+    <span class="cbadge cbadge-gold">Activity 3</span>
+    <span class="cbadge cbadge-green">✓ POC 배포 완료</span>
+    <span class="cbadge cbadge-gray">MVP 우선순위 ①</span>
+  </div>
+  <h1><span>Morpheme Laser Cutter</span><br>기술 검토서</h1>
+  <div class="cover-sub">레이저 사냥꾼 — 형태소 경계 식별 게임 / From Phonics To Reading</div>
+  <div class="cover-meta">
+    <div class="meta-item"><strong>작성일</strong>2026년 6월 11일</div>
+    <div class="meta-item"><strong>작성자</strong>임용주 차장 (ATLAS AI Product팀)</div>
+    <div class="meta-item"><strong>버전</strong>v1.2 — 스택 확정 이후</div>
+    <div class="meta-item"><strong>POC</strong>antonylim-source.github.io/morpheme-laser-cutter</div>
+  </div>
+</div>
+
+<nav class="doc-nav" aria-label="문서 탐색">
+  <a href="../index.html">← 문서 보관함</a>
+  <a href="../cursor/morpheme_cursor_prompt_guide.html">Cursor 6단계 구현 가이드 →</a>
+</nav>
+
+<div class="body">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">목차</div>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">01</span> 프로젝트 개요</div>
+      <div class="toc-item"><span class="toc-num">02</span> 핵심 기술 명세</div>
+      <div class="toc-item"><span class="toc-num">03</span> 확정 기술 스택</div>
+      <div class="toc-item"><span class="toc-num">04</span> 난이도 시스템</div>
+      <div class="toc-item"><span class="toc-num">05</span> 문제점 & 해결 방안</div>
+      <div class="toc-item"><span class="toc-num">06</span> 개발 로드맵</div>
+      <div class="toc-item"><span class="toc-num">07</span> QA 체크리스트</div>
+      <div class="toc-item"><span class="toc-num">08</span> 기술 결정 이력</div>
+    </div>
+  </div>
+
+  <!-- 01. 개요 -->
+  <div class="section">
+    <div class="sec-header">
+      <span class="sec-num">01</span>
+      <span class="sec-title">프로젝트 개요</span>
+    </div>
+
+    <p>POLY M.A.P.S. 4개 Activity 중 <strong>개발 우선순위 1위</strong>. 외부 API 불필요, 완전 온디바이스 동작으로 4개 중 기술 난이도가 가장 낮아 즉시 착수 가능. 합성어(compound word) 58개를 기반으로 학습자가 터치/마우스 슬래시로 형태소 경계를 절단하는 게임형 학습 콘텐츠.</p>
+
+    <div class="infobox teal">
+      <strong>뇌과학 근거:</strong> 물리적 절단 체험으로 긴 단어에 대한 인지 공포 해소. 시각 피질에 형태소 단위 자동 분석 회로(0.1초 처리)를 이식하는 교육 효과.
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">콘텐츠 기반</div>
+        <div class="card-value">58</div>
+        <div class="card-sub">Compound Words<br>(Willy Blevins 교재 기반)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">판정 레이턴시</div>
+        <div class="card-value">&lt;10ms</div>
+        <div class="card-sub">온디바이스 처리<br>외부 API 없음</div>
+      </div>
+      <div class="card">
+        <div class="card-label">예상 개발 기간</div>
+        <div class="card-value">4–6주</div>
+        <div class="card-sub">Activity 1~4 중 최단<br>즉시 착수 가능</div>
+      </div>
+      <div class="card">
+        <div class="card-label">POC 상태</div>
+        <div class="card-value">배포 완료</div>
+        <div class="card-sub">GitHub Pages 운영 중<br>검증 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02. 기술 명세 -->
+  <div class="section" id="sec-spec">
+    <div class="sec-header">
+      <span class="sec-num">02</span>
+      <span class="sec-title">핵심 기술 명세</span>
+    </div>
+
+    <h3>슬래시 판정 로직</h3>
+    <div class="infobox">
+      <strong>판정 공식:</strong> <code>|touchX − boundaryPixelX| ≤ tolerance</code><br>
+      터치(또는 마우스) X좌표와 형태소 경계 픽셀 위치 간의 거리를 계산하여 허용 오차 이내면 정타로 판정.
+    </div>
+    <div class="related-link">구현: <a href="../cursor/morpheme_cursor_prompt_guide.html#step-3">Cursor 가이드 STEP 3 — useSlashJudge 판정 엔진</a></div>
+
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>명세</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>판정 방식</td><td>터치 X좌표 vs 합성어 <code>Boundary_Index</code> 픽셀 위치 비교</td></tr>
+        <tr><td>입력 이벤트</td><td>Touch Events API (모바일) + Mouse Events API (PC/데스크톱)</td></tr>
+        <tr><td>판정 레이턴시</td><td>온디바이스 처리 · <strong>10ms 이내</strong></td></tr>
+        <tr><td>음성 의존</td><td><strong>없음</strong> — 완전 독립 동작 (4개 Activity 중 기술 난이도 최저)</td></tr>
+        <tr><td>합성어 DB</td><td>58개 compound word + 각 단어의 <code>Boundary_Index</code> 픽셀 좌표 사전 구축</td></tr>
+        <tr><td>외부 API</td><td><strong>불필요</strong></td></tr>
+        <tr><td>오프라인 동작</td><td><strong>완전 지원</strong></td></tr>
+        <tr><td>정타 시 피드백</td><td>형태소 분해 애니메이션 + 이미지 변신 + 사운드 이펙트</td></tr>
+        <tr><td>오타 시 피드백</td><td>반사 이펙트 + 힌트 제공</td></tr>
+      </tbody>
+    </table>
+
+    <h3>HUD 구성</h3>
+    <table class="spec-table">
+      <thead><tr><th>요소</th><th>동작 규칙</th></tr></thead>
+      <tbody>
+        <tr><td>Score</td><td>정타 시 기본 점수 + 콤보 보너스 누적</td></tr>
+        <tr><td>Combo</td><td>연속 정타 카운트 · 오타 시 초기화</td></tr>
+        <tr><td>Miss</td><td>오타 누적 카운트 · 세션당 최대 Miss 기준 초과 시 게임 종료</td></tr>
+        <tr><td>세션 진행</td><td>단어 세트 소진 또는 Miss 한도 초과 시 결과 화면으로 전환</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 03. 기술 스택 -->
+  <div class="section">
+    <div class="sec-header">
+      <span class="sec-num">03</span>
+      <span class="sec-title">확정 기술 스택</span>
+    </div>
+
+    <div class="infobox blue">
+      <strong>스택 확정 경위:</strong> 초기 Vanilla JS + Vite 6.x + Pointer Events API로 설계 → Cursor 검토 후 TypeScript + React 19 + Vite 8.x + Touch/Mouse Events API로 전환 확정.
+    </div>
+
+    <h3>확정 스택 (즉시 적용)</h3>
+    <div class="stack-list">
+      <span class="stack-badge sb-confirmed">TypeScript</span>
+      <span class="stack-badge sb-confirmed">React 19</span>
+      <span class="stack-badge sb-confirmed">Vite 8.x</span>
+      <span class="stack-badge sb-confirmed">Touch Events API</span>
+      <span class="stack-badge sb-confirmed">Mouse Events API</span>
+      <span class="stack-badge sb-confirmed">GitHub Pages (배포)</span>
+    </div>
+
+    <h3>이펙트 강화 검토 옵션 (Phase 2)</h3>
+    <div class="stack-list">
+      <span class="stack-badge sb-pending">Phaser.js (게임 이펙트)</span>
+      <span class="stack-badge sb-pending">파티클 이미터</span>
+      <span class="stack-badge sb-pending">물리 엔진 (조각 튕김)</span>
+    </div>
+    <p style="font-size:12px; margin-top:4px;">Phaser는 레이저 히트 이펙트, 형태소 절단 애니메이션, 화면 쉐이크 등 비주얼 강화에 유리. 현재 React 스택과 병행 검토 중.</p>
+
+    <h3>개발 환경</h3>
+    <div class="stack-list">
+      <span class="stack-badge sb-confirmed">Cursor Pro (Claude Sonnet/Opus)</span>
+      <span class="stack-badge sb-confirmed">GitHub Pages</span>
+      <span class="stack-badge sb-confirmed">antonylim-source.github.io</span>
+    </div>
+  </div>
+
+  <!-- 04. 난이도 -->
+  <div class="section" id="sec-difficulty">
+    <div class="sec-header">
+      <span class="sec-num">04</span>
+      <span class="sec-title">난이도 시스템</span>
+    </div>
+
+    <p>저연령 아동의 소근육 발달 수준을 고려한 3단계 허용 오차 설계. 어드민 설정에서 캠퍼스별 조정 가능.</p>
+
+    <table class="diff-table">
+      <thead>
+        <tr>
+          <th>난이도</th>
+          <th>허용 오차</th>
+          <th>대상 연령</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="easy">
+          <td>Easy</td>
+          <td><code>±20px</code></td>
+          <td>저연령 (유아~초등 저학년)</td>
+          <td>소근육 발달 단계 배려</td>
+        </tr>
+        <tr class="normal">
+          <td>Normal</td>
+          <td><code>±18px</code></td>
+          <td>초등 중학년</td>
+          <td>기본 난이도</td>
+        </tr>
+        <tr class="hard">
+          <td>Hard</td>
+          <td><code>±12px</code></td>
+          <td>초등 고학년 이상</td>
+          <td>정밀 조작 요구</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="infobox">
+      <strong>어드민 설정 가능 항목:</strong> 허용 오차(px), 세션당 단어 수, Miss 한도, 콤보 보너스 배율. 캠퍼스·학년별 맞춤 설정 지원 예정.
+    </div>
+  </div>
+
+  <!-- 05. 문제점 & 해결 방안 -->
+  <div class="section" id="sec-issues">
+    <div class="sec-header">
+      <span class="sec-num">05</span>
+      <span class="sec-title">문제점 &amp; 해결 방안</span>
+    </div>
+
+    <div class="issue-block">
+      <div class="issue-head problem">🔴 문제 ① — 페널티 과중 및 저연령 소근육 조작 난이도</div>
+      <div class="issue-body">오타 시 괴물 1.5× 거대화 페널티는 유아에게 불안감·학습 거부 반응 유발 가능. 저연령의 소근육 발달 미완성으로 인한 과도한 오타 누적 우려.</div>
+    </div>
+    <div class="issue-block">
+      <div class="issue-head solution">✅ 해결 방안</div>
+      <div class="issue-body">
+        <strong>단계적 힌트 시스템 도입:</strong> 1차 오타 → 경계 영역 하이라이트 표시 / 2차 오타 → 절단선 가이드 제공 / 3차 오타 → 자동 정답 처리 후 다음 단어 진행.<br>
+        <strong>Easy 모드 전용 설정:</strong> 페널티 비활성화 옵션 + ±20px 관대한 판정 적용.
+      </div>
+    </div>
+    <div class="related-link">구현: <a href="../cursor/morpheme_cursor_prompt_guide.html#step-5">Cursor 가이드 STEP 5 — 힌트 3단계·난이도 선택</a></div>
+
+    <div class="issue-block" style="margin-top:20px;">
+      <div class="issue-head problem">🔴 문제 ② — 이펙트/비주얼 완성도 (현재 POC 수준)</div>
+      <div class="issue-body">현재 POC는 기능 검증 수준. 레이저 빔 드로잉, 파티클 히트 이펙트, 형태소 조각 튕김 등 상용 수준의 비주얼이 미구현 상태.</div>
+    </div>
+    <div class="issue-block">
+      <div class="issue-head solution">✅ 해결 방안</div>
+      <div class="issue-body">
+        <strong>Phase 1 (현 스택 내):</strong> CSS/Canvas 기반 레이저 궤적 드로잉 + 기본 파티클 효과 구현.<br>
+        <strong>Phase 2 검토:</strong> Phaser.js 도입 — 파티클 이미터, 물리 엔진 기반 조각 튕김, 글로우 필터, 화면 쉐이크. 현재 React 스택과 레이어 분리 방식으로 통합 가능.
+      </div>
+    </div>
+  </div>
+
+  <!-- 06. 개발 로드맵 -->
+  <div class="section" id="sec-roadmap">
+    <div class="sec-header">
+      <span class="sec-num">06</span>
+      <span class="sec-title">개발 로드맵</span>
+    </div>
+
+    <div class="infobox teal">
+      <strong>M.A.P.S. 전체 우선순위:</strong> Activity 3 (4–6주, 즉시 착수) → Activity 1 (6–8주) → Activity 2 (8–10주) → Activity 4 (10–12주)
+    </div>
+
+    <div class="timeline" style="margin-top:24px;">
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot" style="background:#0f6e56;"></div>
+          <div class="tl-line"></div>
+          <div class="tl-phase">완료</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">POC 배포 완료 <span class="tl-weeks tl-green">✓ Done</span></div>
+          <div class="tl-desc">TypeScript + React 19 + Vite 8.x 스택 확정. 터치/마우스 슬래시 판정 로직 구현. GitHub Pages 배포 및 기능 검증 완료. (antonylim-source.github.io/morpheme-laser-cutter)</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot" style="background:#d97706;"></div>
+          <div class="tl-line"></div>
+          <div class="tl-phase">진행중</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">Phase 1 — MVP 완성 <span class="tl-weeks tl-amber">4–6주</span></div>
+          <div class="tl-desc">HUD 시스템 (Score / Combo / Miss) 완성. 3단계 난이도 시스템 구현. 힌트 단계별 표시 로직. 기본 이펙트 (CSS/Canvas 레이저 궤적, 정타 파티클). 58개 단어 DB 완성. <a href="../cursor/morpheme_cursor_prompt_guide.html" style="color:#92400e;font-weight:600;text-decoration:none;">→ Cursor 6단계 구현 가이드</a> (터치 판정·힌트·난이도·레이저 궤적)</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot" style="background:#6b7280;"></div>
+          <div class="tl-line"></div>
+          <div class="tl-phase">예정</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">Phase 2 — 이펙트 고도화 <span class="tl-weeks tl-gray">검토중</span></div>
+          <div class="tl-desc">Phaser.js 도입 검토. 파티클 이미터 기반 레이저 히트 이펙트. 물리 엔진 기반 형태소 조각 튕김 애니메이션. 글로우 필터, 화면 쉐이크. 씬 전환 연출 강화.</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot" style="background:#6b7280;"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-title">어드민 설정 패널 <span class="tl-weeks tl-gray">Phase 2+</span></div>
+          <div class="tl-desc">캠퍼스별 난이도 설정. 허용 오차 조정. Miss 한도 · 세션 단어 수 · 콤보 배율 설정. 학습 결과 데이터 수집.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 07. QA 체크리스트 -->
+  <div class="section" id="sec-qa">
+    <div class="sec-header">
+      <span class="sec-num">07</span>
+      <span class="sec-title">QA 체크리스트</span>
+    </div>
+
+    <div class="related-link">검증 도구: <a href="../cursor/morpheme_cursor_prompt_guide.html#step-6">Cursor 가이드 STEP 6 — Debug Overlay</a> (판정 좌표 시각화)</div>
+
+    <h3>기능 검증 (POC 완료 항목)</h3>
+    <div class="qa-grid">
+      <div class="qa-item"><div class="qa-check ok">✓</div><div class="qa-text"><strong>슬래시 판정 로직</strong> — touchX vs boundaryPixelX 오차 계산 정확도</div></div>
+      <div class="qa-item"><div class="qa-check ok">✓</div><div class="qa-text"><strong>Touch Events</strong> — 모바일 멀티터치 입력 처리</div></div>
+      <div class="qa-item"><div class="qa-check ok">✓</div><div class="qa-text"><strong>Mouse Events</strong> — 데스크톱 드래그 슬래시 처리</div></div>
+      <div class="qa-item"><div class="qa-check ok">✓</div><div class="qa-text"><strong>GitHub Pages 배포</strong> — 정적 빌드 및 라우팅 확인</div></div>
+      <div class="qa-item"><div class="qa-check ok">✓</div><div class="qa-text"><strong>오프라인 동작</strong> — 네트워크 없이 실행 확인</div></div>
+    </div>
+
+    <h3 style="margin-top:20px;">Phase 1 완료 전 필수 항목</h3>
+    <div class="qa-grid">
+      <div class="qa-item"><div class="qa-check pending"></div><div class="qa-text"><strong>3단계 난이도</strong> — Easy ±20px / Normal ±18px / Hard ±12px 전환 테스트</div></div>
+      <div class="qa-item"><div class="qa-check pending"></div><div class="qa-text"><strong>HUD 정확도</strong> — Score / Combo / Miss 카운터 엣지케이스 검증</div></div>
+      <div class="qa-item"><div class="qa-check pending"></div><div class="qa-text"><strong>힌트 시스템</strong> — 3단계 힌트 노출 순서 및 자동 정답 처리 확인</div></div>
+      <div class="qa-item"><div class="qa-check pending"></div><div class="qa-text"><strong>58개 단어 DB</strong> — 전체 boundaryPixelX 좌표 정확도 검수</div></div>
+      <div class="qa-item"><div class="qa-check pending"></div><div class="qa-text"><strong>세션 종료 조건</strong> — 단어 소진 / Miss 한도 초과 → 결과 화면 전환</div></div>
+      <div class="qa-item"><div class="qa-check pending"></div><div class="qa-text"><strong>반응형</strong> — 태블릿 / 모바일 / 데스크톱 레이아웃 검증</div></div>
+    </div>
+  </div>
+
+  <!-- 08. 기술 결정 이력 -->
+  <div class="section" id="sec-decisions">
+    <div class="sec-header">
+      <span class="sec-num">08</span>
+      <span class="sec-title">기술 결정 이력</span>
+    </div>
+
+    <div class="decision-row">
+      <div class="decision-label">스택</div>
+      <div class="decision-body">
+        <div class="decision-old">Vanilla JS + Vite 6.x</div>
+        <div class="decision-new">✓ TypeScript + React 19 + Vite 8.x</div>
+        <div class="decision-why">Cursor 검토 후 타입 안정성 및 컴포넌트 재사용성 확보를 위해 변경 (2025년 결정)</div>
+      </div>
+    </div>
+
+    <div class="decision-row">
+      <div class="decision-label">입력</div>
+      <div class="decision-body">
+        <div class="decision-old">Pointer Events API</div>
+        <div class="decision-new">✓ Touch Events API + Mouse Events API (분리)</div>
+        <div class="decision-why">모바일과 데스크톱 이벤트 처리를 명확히 분리하여 크로스 플랫폼 안정성 향상</div>
+      </div>
+    </div>
+
+    <div class="decision-row">
+      <div class="decision-label">이펙트</div>
+      <div class="decision-body">
+        <div class="decision-old">단순 CSS 트랜지션</div>
+        <div class="decision-new">Phase 2: Phaser.js 도입 검토 중</div>
+        <div class="decision-why">파티클, 물리 엔진, 글로우 필터 등 게임 수준 이펙트 요구 → Phaser.js가 React + Canvas 직접 구현 대비 공수 대폭 감소</div>
+      </div>
+    </div>
+
+    <div class="decision-row">
+      <div class="decision-label">개발환경</div>
+      <div class="decision-body">
+        <div class="decision-old">일반 VSCode</div>
+        <div class="decision-new">✓ Cursor Pro (Claude Sonnet/Opus) — <a href="../cursor/morpheme_cursor_prompt_guide.html" style="color:inherit;text-decoration:underline;">6단계 구현 프롬프트 가이드</a> 적용</div>
+        <div class="decision-why">AI 코드 생성으로 POC 개발 속도 대폭 단축. game.types.ts 기반 타입 일관성 유지. (터치 판정·힌트·난이도·레이저 궤적 범위)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>Korea Poly School — ATLAS AI Product Team · 임용주 차장 · <a href="../index.html" style="color:var(--muted);">문서 보관함</a></span>
+  <span>M.A.P.S. Activity 3 기술 검토서 v1.2 · 2026.06.11</span>
+</footer>
+
+</body>
+</html>

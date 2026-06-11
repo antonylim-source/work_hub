@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>터치 감지 Cursor 프롬프트 가이드 — Morpheme Laser Cutter</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8e6e0;
+    --muted: #7a7870;
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.1);
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.08);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.08);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.08);
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.08);
+    --mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Malgun Gothic', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 48px 56px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--amber); margin-bottom: 12px;
+  }
+  .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 10px; }
+  .header h1 em { font-style: normal; color: var(--amber); }
+  .header-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+  .header-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+  .meta-chip {
+    font-size: 11px; padding: 4px 12px; border-radius: 20px;
+    border: 1px solid var(--border2); color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .meta-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ── Layout ── */
+  .content { max-width: 900px; margin: 0 auto; padding: 48px 56px 80px; }
+
+  /* ── Intro box ── */
+  .intro-box {
+    background: var(--amber-dim);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    font-size: 13px;
+    color: rgba(245,158,11,0.85);
+    line-height: 1.7;
+  }
+  .intro-box strong { color: var(--amber); }
+
+  /* ── Step card ── */
+  .step-card {
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .step-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; flex-shrink: 0;
+  }
+  .step-head-text { flex: 1; }
+  .step-title { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .step-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .step-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0;
+  }
+
+  /* Color themes per step */
+  .s1 .step-head { background: rgba(96,165,250,0.06); }
+  .s1 .step-num  { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+  .s1 .step-badge { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+
+  .s2 .step-head { background: rgba(74,222,128,0.04); }
+  .s2 .step-num  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+  .s2 .step-badge { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+
+  .s3 .step-head { background: rgba(245,158,11,0.06); }
+  .s3 .step-num  { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+  .s3 .step-badge { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+
+  .s4 .step-head { background: rgba(45,212,191,0.04); }
+  .s4 .step-num  { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+  .s4 .step-badge { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+
+  .s5 .step-head { background: rgba(248,113,113,0.04); }
+  .s5 .step-num  { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+  .s5 .step-badge { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+
+  .s6 .step-head { background: rgba(167,139,250,0.04); }
+  .s6 .step-num  { background: rgba(167,139,250,0.1); color: #a78bfa; border: 1px solid rgba(167,139,250,0.2); }
+  .s6 .step-badge { background: rgba(167,139,250,0.1); color: #a78bfa; border: 1px solid rgba(167,139,250,0.2); }
+
+  .step-body { padding: 22px 24px; background: var(--surface); }
+
+  /* ── Context block ── */
+  .ctx-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .ctx-block strong { color: var(--text); }
+
+  /* ── Prompt box ── */
+  .prompt-wrap { position: relative; margin: 12px 0; }
+  .prompt-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .prompt-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .prompt-box {
+    background: #0a0a0c;
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #d4d0c8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+  }
+  .prompt-box .kw-context { color: #60a5fa; }
+  .prompt-box .kw-task    { color: #4ade80; }
+  .prompt-box .kw-spec    { color: #f59e0b; }
+  .prompt-box .kw-output  { color: #2dd4bf; }
+  .prompt-box .kw-code    { color: #a78bfa; font-style: italic; }
+  .copy-btn {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 6px; padding: 4px 10px;
+    font-size: 11px; color: var(--muted); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--border2); color: var(--text); }
+
+  /* ── Why section ── */
+  .why-block {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    border-left: 3px solid var(--border2);
+  }
+  .why-block.amber { border-left-color: var(--amber); }
+  .why-block.teal  { border-left-color: var(--teal); }
+  .why-block.green { border-left-color: var(--green); }
+  .why-block.blue  { border-left-color: var(--blue); }
+  .why-block.red   { border-left-color: var(--red); }
+  .why-block.purple { border-left-color: #a78bfa; }
+  .why-block strong { color: var(--text); font-weight: 600; }
+
+  /* ── Warning / tip ── */
+  .tip {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 10px 14px; border-radius: 8px; font-size: 12.5px;
+    margin: 10px 0; line-height: 1.6;
+  }
+  .tip-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+  .tip.warn { background: rgba(248,113,113,0.08); color: #fca5a5; border: 1px solid rgba(248,113,113,0.15); }
+  .tip.note { background: rgba(245,158,11,0.08); color: #fcd34d; border: 1px solid rgba(245,158,11,0.15); }
+  .tip.ok   { background: rgba(74,222,128,0.06); color: #86efac; border: 1px solid rgba(74,222,128,0.15); }
+
+  /* ── Expected output ── */
+  .output-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--teal); margin: 14px 0 6px;
+  }
+  .output-list { list-style: none; }
+  .output-list li {
+    font-size: 12.5px; color: var(--muted); padding: 4px 0;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .output-list li::before { content: '→'; color: var(--teal); flex-shrink: 0; }
+
+  /* ── Summary table ── */
+  .summary-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+  .summary-table th {
+    background: var(--surface2); text-align: left;
+    padding: 10px 14px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+    border-bottom: 1px solid var(--border2);
+  }
+  .summary-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+  .summary-table td:first-child { color: var(--amber); font-weight: 700; white-space: nowrap; }
+  .summary-table td code { font-family: var(--mono); font-size: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; color: var(--teal); }
+
+  /* ── Section header ── */
+  .sec-hdr { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  /* ── Doc nav ── */
+  .doc-nav {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    padding: 10px 56px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .doc-nav a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    padding: 5px 12px; border: 1px solid var(--border2); border-radius: 6px;
+    transition: all .15s;
+  }
+  .doc-nav a:hover { color: var(--amber); border-color: rgba(245,158,11,0.4); background: var(--amber-dim); }
+  .related-link {
+    margin: 0 0 16px; padding: 10px 14px;
+    background: var(--teal-dim); border-left: 3px solid var(--teal);
+    border-radius: 0 8px 8px 0; font-size: 12px; color: rgba(45,212,191,0.85); line-height: 1.6;
+  }
+  .related-link a { color: var(--teal); font-weight: 600; text-decoration: none; }
+  .related-link a:hover { text-decoration: underline; }
+
+  /* ── Footer ── */
+  footer { padding: 24px 56px 40px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; max-width: 900px; margin: 0 auto; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--amber); }
+
+  @media (max-width: 640px) {
+    .header, .content, .doc-nav { padding-left: 20px; padding-right: 20px; }
+    .prompt-box { font-size: 11px; }
+    footer { flex-direction: column; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Cursor Prompting Guide · Morpheme Laser Cutter</div>
+  <h1>형태소 경계 <em>터치 감지</em> 구현<br>단계별 Cursor 프롬프트</h1>
+  <div class="header-sub">POC 기반 → 상용 수준 터치 판정 로직 완성 가이드 · TypeScript + React 19 + Vite 8.x</div>
+  <div class="header-meta">
+    <div class="meta-chip"><div class="dot" style="background:#60a5fa"></div> 6단계 프롬프트</div>
+    <div class="meta-chip"><div class="dot" style="background:#4ade80"></div> POC 코드베이스 기반</div>
+    <div class="meta-chip"><div class="dot" style="background:#f59e0b"></div> Touch + Mouse 동시 처리</div>
+    <div class="meta-chip"><div class="dot" style="background:#2dd4bf"></div> 난이도 3단계 내장</div>
+  </div>
+</div>
+
+<nav class="doc-nav" aria-label="문서 탐색">
+  <a href="../index.html">← 문서 보관함</a>
+  <a href="../maps/maps_activity3_tech_review.html">Activity 3 기술 검토서 →</a>
+</nav>
+
+<div class="content">
+
+  <div class="related-link">기술 명세·로드맵: <a href="../maps/maps_activity3_tech_review.html#sec-spec">§02 슬래시 판정</a> · <a href="../maps/maps_activity3_tech_review.html#sec-roadmap">§06 Phase 1</a> · <a href="../maps/maps_activity3_tech_review.html#sec-qa">§07 QA</a></div>
+
+  <div class="intro-box">
+    <strong>이 가이드의 목적:</strong> 기존 POC에 존재하는 기본 터치 처리를 "상용 수준 판정 엔진"으로 교체하는 것. 각 프롬프트는 독립적으로 실행 가능하며, 앞 단계 결과물을 다음 단계 컨텍스트로 넘깁니다. 범위: 터치 판정·힌트·난이도·레이저 궤적 (58개 단어 DB·Phase 2 Phaser는 <a href="../maps/maps_activity3_tech_review.html#sec-roadmap" style="color:var(--teal);">기술 검토서</a> 참고). <strong>각 프롬프트 맨 앞에 항상 붙일 것:</strong> <code style="color:#fbbf24; font-family:monospace; font-size:12px;">"This is for POLY M.A.P.S. Laser Hunter POC. Follow the existing types in game.types.ts and the folder structure we established."</code>
+  </div>
+
+  <!-- ────────────────── STEP 1 ────────────────── -->
+  <div class="step-card s1" id="step-1">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-head-text">
+        <div class="step-title">타입 기반 확립 — <code style="font-size:13px; color:#60a5fa">SlashEvent</code> & <code style="font-size:13px; color:#60a5fa">BoundaryResult</code></div>
+        <div class="step-subtitle">판정 로직의 입출력 계약 먼저 정의. 이후 모든 프롬프트가 이 타입에 의존.</div>
+      </div>
+      <div class="step-badge">타입 정의</div>
+    </div>
+    <div class="step-body">
+
+      <div class="ctx-block">
+        <strong>왜 1번인가:</strong> 터치 이벤트는 TouchEvent와 MouseEvent 두 갈래인데, 판정 로직은 둘 다 동일한 입력 형식을 받아야 함. 공통 타입을 먼저 만들면 Cursor가 이후 단계에서 타입 불일치로 헤매지 않음.
+      </div>
+
+      <div class="prompt-label">Cursor에 붙여넣을 프롬프트</div>
+      <div class="prompt-wrap">
+        <div class="prompt-box"><span class="kw-context">// Context: POLY M.A.P.S. Morpheme Laser Cutter
+// Stack: TypeScript + React 19 + Vite 8.x
+// File to modify: src/types/game.types.ts</span>
+
+<span class="kw-task">Add the following types to game.types.ts for the touch/slash detection system:</span>
+
+<span class="kw-spec">1. SlashGesture — normalized input from BOTH TouchEvent and MouseEvent:
+   - startX: number        // gesture start X (clientX)
+   - startY: number        // gesture start Y (clientY)  
+   - endX: number          // gesture end X
+   - endY: number          // gesture end Y
+   - durationMs: number    // total gesture duration in ms
+   - isTouch: boolean      // true = TouchEvent, false = MouseEvent
+
+2. BoundaryHit — result of one slash judgment:
+   - wordId: string        // e.g. "raincoat"
+   - boundaryIndex: number // which boundary was targeted (0-based)
+   - boundaryPixelX: number // expected X position on screen
+   - slashX: number        // actual slash X position
+   - delta: number         // Math.abs(slashX - boundaryPixelX)
+   - tolerance: number     // allowed tolerance for current difficulty
+   - isHit: boolean        // delta <= tolerance
+   - difficulty: 'easy' | 'normal' | 'hard'
+
+3. Difficulty config object:
+   - easy:   tolerance 20px  (ages 4-6, low motor control)
+   - normal: tolerance 18px  (ages 7-9)
+   - hard:   tolerance 12px  (ages 10+)</span>
+
+<span class="kw-output">Do NOT create any components or hooks yet. Types only.</span></div>
+        <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+      </div>
+
+      <div class="why-block blue">
+        <strong>핵심 포인트:</strong> <code>SlashGesture</code>가 TouchEvent/MouseEvent를 추상화하는 게 핵심. 이후 판정 훅은 이벤트 타입을 몰라도 됨. <code>delta</code>를 타입에 포함시키면 디버그 오버레이 구현이 쉬워짐.
+      </div>
+
+      <div class="output-label">기대 출력물</div>
+      <ul class="output-list">
+        <li><code>game.types.ts</code>에 3개 타입 추가, 기존 타입 유지</li>
+        <li>DIFFICULTY_CONFIG 상수 객체 (tolerance 값 3종)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ────────────────── STEP 2 ────────────────── -->
+  <div class="step-card s2" id="step-2">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-head-text">
+        <div class="step-title">입력 정규화 — <code style="font-size:13px; color:#4ade80">useSlashInput</code> 훅</div>
+        <div class="step-subtitle">Touch/Mouse 이벤트를 동일한 SlashGesture로 변환. 판정 로직과 분리.</div>
+      </div>
+      <div class="step-badge">입력 추상화</div>
+    </div>
+    <div class="step-body">
+
+      <div class="ctx-block">
+        <strong>왜 분리하나:</strong> 판정 로직(useSlashJudge)이 이벤트 타입을 알 필요 없음. 나중에 Phaser로 교체하거나 게임패드를 추가할 때 이 훅만 교체하면 됨.
+      </div>
+
+      <div class="tip note">
+        <span class="tip-icon">⚠</span>
+        <span>모바일에서 <code>touchstart</code> → <code>touchend</code> 사이에 스크롤이 발생하면 판정이 오염됨. <code>preventDefault()</code>와 passive 이벤트 처리를 명시적으로 요청할 것.</span>
+      </div>
+
+      <div class="prompt-label">Cursor에 붙여넣을 프롬프트</div>
+      <div class="prompt-wrap">
+        <div class="prompt-box"><span class="kw-context">// Context: POLY M.A.P.S. Morpheme Laser Cutter
+// Types already defined in game.types.ts (SlashGesture, BoundaryHit, DIFFICULTY_CONFIG)
+// Create: src/hooks/useSlashInput.ts</span>
+
+<span class="kw-task">Create a React hook useSlashInput(ref: RefObject<HTMLElement>) that:
+</span>
+<span class="kw-spec">INPUT HANDLING:
+- Attaches BOTH touch and mouse listeners to the given ref element
+- Touch: touchstart → record start, touchend → compute gesture
+- Mouse: mousedown → record start, mouseup → compute gesture
+- On touchstart: call event.preventDefault() to block scroll interference
+  (attach with { passive: false })
+- Ignore multi-touch (touches.length > 1) → return null
+
+NORMALIZATION:
+- Extract clientX/clientY from both event types identically
+- Compute durationMs = endTimestamp - startTimestamp
+- Set isTouch = true for touch events, false for mouse
+- Return a SlashGesture object (from game.types.ts)
+
+FILTERING (reject invalid gestures):
+- Minimum drag distance: 30px horizontal movement required
+- Maximum duration: 800ms (longer = accidental drag, not slash)
+- Vertical tolerance: Math.abs(deltaY) < Math.abs(deltaX) * 1.5
+  (reject near-vertical swipes)
+
+RETURN VALUE:
+- lastGesture: SlashGesture | null
+- isSlashing: boolean (true during active gesture)</span>
+
+<span class="kw-output">Export as default. No UI. Pure input abstraction only.
+Cleanup all event listeners on unmount.</span></div>
+        <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+      </div>
+
+      <div class="why-block green">
+        <strong>필터링 기준 근거:</strong> 30px 최소 거리는 아동이 화면 터치 시 발생하는 자연적인 손떨림 제거용. 800ms 제한은 "천천히 드래그"와 "빠른 슬래시"를 구분. 수직 방향 필터는 스크롤 제스처 오인식 방지.
+      </div>
+
+      <div class="output-label">기대 출력물</div>
+      <ul class="output-list">
+        <li><code>useSlashInput.ts</code> 훅 — SlashGesture 반환</li>
+        <li>Touch/Mouse 이벤트 리스너 자동 정리 (cleanup)</li>
+        <li>멀티터치 무시 처리</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ────────────────── STEP 3 ────────────────── -->
+  <div class="step-card s3" id="step-3">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-head-text">
+        <div class="step-title">핵심 판정 엔진 — <code style="font-size:13px; color:#f59e0b">useSlashJudge</code> 훅</div>
+        <div class="step-subtitle">|slashX − boundaryPixelX| ≤ tolerance 공식 구현. 난이도별 분기.</div>
+      </div>
+      <div class="step-badge">핵심 로직</div>
+    </div>
+    <div class="step-body">
+
+      <div class="ctx-block">
+        <strong>판정 공식:</strong> <code style="color:#f59e0b">isHit = Math.abs(gesture.endX - boundaryPixelX) &lt;= DIFFICULTY_CONFIG[difficulty].tolerance</code><br>
+        단, boundaryPixelX는 화면 렌더링 좌표이므로 <strong>DOM getBoundingClientRect()로 실시간 계산</strong>해야 함 (폰트 크기나 반응형 레이아웃 변화 반영).
+      </div>
+
+      <div class="tip warn">
+        <span class="tip-icon">⚠</span>
+        <span><strong>흔한 실수:</strong> boundaryPixelX를 하드코딩하면 화면 크기 변경 시 판정이 어긋남. 반드시 단어 DOM 요소의 getBoundingClientRect()로 동적 계산 요청할 것.</span>
+      </div>
+
+      <div class="prompt-label">Cursor에 붙여넣을 프롬프트</div>
+      <div class="prompt-wrap">
+        <div class="prompt-box"><span class="kw-context">// Context: POLY M.A.P.S. Morpheme Laser Cutter  
+// useSlashInput hook is complete (returns SlashGesture)
+// Create: src/hooks/useSlashJudge.ts</span>
+
+<span class="kw-task">Create useSlashJudge hook that takes a SlashGesture and judges boundary hits:</span>
+
+<span class="kw-spec">SIGNATURE:
+  useSlashJudge(
+    wordRef: RefObject<HTMLElement>,   // the word display element
+    wordData: CompoundWord,             // current word with boundary data
+    difficulty: 'easy' | 'normal' | 'hard',
+    gesture: SlashGesture | null
+  ): BoundaryHit | null
+
+BOUNDARY PIXEL CALCULATION:
+- wordData has morphemes: string[]  e.g. ["rain", "coat"]
+- Render the word in the DOM, then use getBoundingClientRect() on each
+  character span to find where each morpheme boundary falls
+- boundaryPixelX = right edge of morpheme[0] span (= left edge of morpheme[1])
+- This must be calculated AFTER the word renders, not hardcoded
+
+JUDGMENT:
+- slashX = gesture.endX (final X position of the slash)
+- delta = Math.abs(slashX - boundaryPixelX)
+- tolerance = DIFFICULTY_CONFIG[difficulty].tolerance
+- isHit = delta <= tolerance
+
+MULTI-BOUNDARY WORDS (e.g. "sunflower" = sun|flow|er):
+- Find the CLOSEST boundary to slashX
+- Judge against that boundary only
+
+RETURN:
+- null if gesture is null or word not rendered yet
+- BoundaryHit object (all fields from game.types.ts)</span>
+
+<span class="kw-output">This hook is PURE JUDGMENT — no state updates, no animations.
+Export BoundaryHit result only. Side effects handled elsewhere.</span></div>
+        <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+      </div>
+
+      <div class="why-block amber">
+        <strong>getBoundingClientRect 사용 이유:</strong> Vite dev vs production 빌드에서 폰트 렌더링이 미묘하게 다름. CSS transform으로 게임 캔버스를 scale할 경우 좌표 보정도 필요. DOM 기반 계산이 가장 안전.
+      </div>
+
+      <div class="output-label">기대 출력물</div>
+      <ul class="output-list">
+        <li><code>useSlashJudge.ts</code> — BoundaryHit 반환</li>
+        <li>멀티 경계 단어 지원 (가장 가까운 경계 자동 선택)</li>
+        <li>반응형 좌표 실시간 계산</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ────────────────── STEP 4 ────────────────── -->
+  <div class="step-card s4" id="step-4">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div class="step-head-text">
+        <div class="step-title">단어 렌더러 — <code style="font-size:13px; color:#2dd4bf">WordDisplay</code> 컴포넌트</div>
+        <div class="step-subtitle">각 형태소를 개별 span으로 렌더링. 판정 훅이 좌표를 읽을 수 있게.</div>
+      </div>
+      <div class="step-badge">렌더링</div>
+    </div>
+    <div class="step-body">
+
+      <div class="ctx-block">
+        <strong>왜 별도 컴포넌트인가:</strong> <code>useSlashJudge</code>가 형태소 경계 좌표를 읽으려면 각 형태소가 <strong>개별 span 엘리먼트</strong>여야 함. 단순 문자열로 렌더링하면 getBoundingClientRect로 경계를 잡을 수 없음.
+      </div>
+
+      <div class="prompt-label">Cursor에 붙여넣을 프롬프트</div>
+      <div class="prompt-wrap">
+        <div class="prompt-box"><span class="kw-context">// Context: POLY M.A.P.S. Morpheme Laser Cutter
+// useSlashJudge needs individual span refs per morpheme
+// Create: src/components/WordDisplay.tsx</span>
+
+<span class="kw-task">Create WordDisplay component that renders compound words with individually
+referenceable morpheme spans:</span>
+
+<span class="kw-spec">PROPS:
+  word: CompoundWord          // { id, morphemes: string[], ... }
+  difficulty: Difficulty
+  onBoundaryRef: (index: number, el: HTMLSpanElement | null) => void
+    // called for each boundary position span
+
+RENDERING:
+  "raincoat" with morphemes ["rain", "coat"] should render as:
+  <span ref="morpheme-0">rain</span>
+  <span ref="boundary-0" />   ← zero-width boundary marker span
+  <span ref="morpheme-1">coat</span>
+
+  The boundary-N span is the measurement target for useSlashJudge.
+  It should have:
+  - width: 0px, height: 100%
+  - position: absolute or inline-block
+  - data-boundary-index attribute
+
+STYLING:
+  - Large font: clamp(48px, 8vw, 80px)
+  - Font weight: 800, letter-spacing: 0.02em
+  - Color: white on dark background
+  - No visible separator between morphemes
+  - Center-aligned in container
+
+VISUAL STATE (prop: hitState: 'idle' | 'hit' | 'miss' | 'hint'):
+  - idle:  normal white text
+  - hit:   each morpheme splits apart with CSS transform translateX
+  - miss:  word shakes horizontally (CSS keyframe)  
+  - hint:  boundary zone glows amber (box-shadow on boundary span)</span>
+
+<span class="kw-output">Forward the container ref to parent via forwardRef.
+Export boundary span positions via onBoundaryRef callback.</span></div>
+        <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+      </div>
+
+      <div class="why-block teal">
+        <strong>zero-width boundary span 전략:</strong> 실제 렌더링에 영향 없이 정확한 경계 X좌표를 제공. <code>getBoundingClientRect().left</code>가 곧 boundaryPixelX. 폰트가 바뀌어도 자동 반영.
+      </div>
+
+      <div class="output-label">기대 출력물</div>
+      <ul class="output-list">
+        <li><code>WordDisplay.tsx</code> — 형태소별 span 구조</li>
+        <li>4가지 hitState 시각 피드백 (idle/hit/miss/hint)</li>
+        <li>경계 span ref 콜백으로 외부에 좌표 노출</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ────────────────── STEP 5 ────────────────── -->
+  <div class="step-card s5" id="step-5">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div class="step-head-text">
+        <div class="step-title">조립 — <code style="font-size:13px; color:#f87171">GameCanvas</code>에서 훅 연결</div>
+        <div class="step-subtitle">useSlashInput → useSlashJudge → WordDisplay 전체 파이프라인 통합.</div>
+      </div>
+      <div class="step-badge">통합</div>
+    </div>
+    <div class="step-body">
+
+      <div class="ctx-block">
+        <strong>데이터 흐름:</strong> 사용자 제스처 → <code>useSlashInput</code> → SlashGesture → <code>useSlashJudge</code> → BoundaryHit → <code>useGameState</code>(score/combo/miss 업데이트) → <code>WordDisplay</code>(hitState 반영)
+      </div>
+
+      <div class="prompt-label">Cursor에 붙여넣을 프롬프트</div>
+      <div class="prompt-wrap">
+        <div class="prompt-box"><span class="kw-context">// Context: POLY M.A.P.S. Morpheme Laser Cutter
+// All hooks exist: useSlashInput, useSlashJudge, useGameState
+// WordDisplay component exists
+// Modify: src/components/GameCanvas.tsx</span>
+
+<span class="kw-task">Wire up the complete slash detection pipeline in GameCanvas:</span>
+
+<span class="kw-spec">PIPELINE ORDER:
+  const canvasRef = useRef<HTMLDivElement>(null)
+  const { lastGesture, isSlashing } = useSlashInput(canvasRef)
+  const hit = useSlashJudge(wordRef, currentWord, difficulty, lastGesture)
+  
+  useEffect(() => {
+    if (!hit) return
+    if (hit.isHit) {
+      dispatch({ type: 'HIT', hit })     // triggers score/combo update
+      setHitState('hit')
+      setTimeout(() => nextWord(), 1200) // advance after split animation
+    } else {
+      dispatch({ type: 'MISS', hit })    // increment miss counter
+      setHitState('miss')
+      
+      // Hint progression logic:
+      // missCount === 1: setHitState('hint') after 600ms
+      // missCount === 2: show boundary line guide
+      // missCount >= 3: auto-advance (skip word, no penalty in Easy mode)
+      
+      setTimeout(() => setHitState('idle'), 800)
+    }
+  }, [hit])
+
+LASER TRAIL VISUAL:
+  When isSlashing === true, draw a line from gesture start to current touch
+  position using a <canvas> overlay (z-index above WordDisplay).
+  - Line color: rgba(251, 191, 36, 0.8)  ← amber glow
+  - Line width: 3px with glow effect (shadowBlur: 12, shadowColor: #fbbf24)
+  - Clear canvas on gesture end
+
+DIFFICULTY SELECTOR:
+  Show three buttons at bottom: [Easy] [Normal] [Hard]
+  Current difficulty highlighted in amber
+  Changing difficulty resets current game session</span>
+
+<span class="kw-output">GameCanvas handles ALL side effects.
+useSlashInput and useSlashJudge stay pure (no dispatch calls).</span></div>
+        <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+      </div>
+
+      <div class="why-block red">
+        <strong>Canvas 오버레이 팁:</strong> WordDisplay와 별개의 <code>&lt;canvas&gt;</code>를 absolute로 올려야 레이저 궤적이 단어 위에 그려짐. <code>pointer-events: none</code> 필수 — 그렇지 않으면 터치 이벤트를 canvas가 가로챔.
+      </div>
+
+      <div class="output-label">기대 출력물</div>
+      <ul class="output-list">
+        <li>완전한 판정 파이프라인 동작</li>
+        <li>Canvas 기반 실시간 레이저 궤적</li>
+        <li>힌트 3단계 자동 진행 로직</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ────────────────── STEP 6 ────────────────── -->
+  <div class="step-card s6" id="step-6">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div class="step-head-text">
+        <div class="step-title">개발 전용 디버그 오버레이</div>
+        <div class="step-subtitle">판정 좌표 시각화. QA 체크리스트 검증용. 배포 시 자동 제거.</div>
+      </div>
+      <div class="step-badge">디버그</div>
+    </div>
+    <div class="step-body">
+
+      <div class="ctx-block">
+        <strong>왜 필요한가:</strong> 58개 단어의 boundaryPixelX가 실제로 올바른지 눈으로 확인해야 함. 특히 반응형 레이아웃에서 폰트 크기가 바뀔 때 경계 좌표가 맞는지 검증 필수.
+      </div>
+      <div class="related-link">검증 항목: <a href="../maps/maps_activity3_tech_review.html#sec-qa">기술 검토서 §07 QA 체크리스트</a></div>
+
+      <div class="prompt-label">Cursor에 붙여넣을 프롬프트</div>
+      <div class="prompt-wrap">
+        <div class="prompt-box"><span class="kw-context">// Context: POLY M.A.P.S. Morpheme Laser Cutter
+// Development-only debug overlay for slash judgment validation
+// Create: src/components/DebugOverlay.tsx</span>
+
+<span class="kw-task">Create DebugOverlay component — visible only in development mode:</span>
+
+<span class="kw-spec">RENDER CONDITION:
+  Only render when import.meta.env.DEV === true
+  Toggle visibility with '?' key press
+  Default: hidden (show on key toggle)
+
+VISUAL ELEMENTS (rendered as SVG or canvas overlay):
+  1. RED vertical line at boundaryPixelX
+     label: "boundary: {boundaryPixelX}px"
+  
+  2. BLUE vertical line at last slashX (from BoundaryHit)
+     label: "slash: {slashX}px"
+  
+  3. GREEN shaded zone: boundaryPixelX ± tolerance
+     label: "±{tolerance}px zone"
+  
+  4. HIT/MISS indicator: large text top-right
+     Show: delta value, isHit result, difficulty
+
+INFO PANEL (bottom-left, semi-transparent):
+  - Current word: {wordId}
+  - Morphemes: {morphemes.join(' | ')}
+  - Difficulty: {difficulty} (tolerance: {tolerance}px)
+  - Last delta: {delta}px → {isHit ? 'HIT ✓' : 'MISS ✗'}
+  - Gesture: start({startX}) → end({endX}), {durationMs}ms
+
+PROPS:
+  hit: BoundaryHit | null
+  boundaryPixelX: number
+  tolerance: number</span>
+
+<span class="kw-output">This component must be completely removed from production bundle.
+Use conditional: {import.meta.env.DEV && <DebugOverlay ... />}</span></div>
+        <button class="copy-btn" onclick="copyPrompt(this)">복사</button>
+      </div>
+
+      <div class="why-block purple">
+        <strong>DEV 전용 번들링:</strong> <code>import.meta.env.DEV</code>는 Vite 8.x에서 tree-shake됨. 조건부 렌더링에 감싸면 프로덕션 빌드에서 컴포넌트 코드 자체가 번들에서 제거됨.
+      </div>
+
+      <div class="tip ok">
+        <span class="tip-icon">✓</span>
+        <span>이 오버레이로 58개 단어 전체의 boundaryPixelX를 한 번씩 눈으로 확인한 후 QA 체크리스트 "58개 단어 DB 검수" 항목을 통과시킬 것.</span>
+      </div>
+
+      <div class="output-label">기대 출력물</div>
+      <ul class="output-list">
+        <li><code>DebugOverlay.tsx</code> — '?' 키로 토글</li>
+        <li>경계/슬래시/허용 범위 실시간 시각화</li>
+        <li>프로덕션 빌드에서 자동 제거</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Summary ── -->
+  <div class="sec-hdr">전체 흐름 요약</div>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>단계</th>
+        <th>생성 파일</th>
+        <th>역할</th>
+        <th>다음 단계로 넘기는 것</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>STEP 1</td>
+        <td><code>game.types.ts</code> 수정</td>
+        <td>타입 계약 확립</td>
+        <td>SlashGesture, BoundaryHit, DIFFICULTY_CONFIG</td>
+      </tr>
+      <tr>
+        <td>STEP 2</td>
+        <td><code>useSlashInput.ts</code></td>
+        <td>Touch/Mouse → SlashGesture 변환</td>
+        <td>lastGesture: SlashGesture | null</td>
+      </tr>
+      <tr>
+        <td>STEP 3</td>
+        <td><code>useSlashJudge.ts</code></td>
+        <td>경계 판정 공식 실행</td>
+        <td>hit: BoundaryHit | null</td>
+      </tr>
+      <tr>
+        <td>STEP 4</td>
+        <td><code>WordDisplay.tsx</code></td>
+        <td>형태소별 span 렌더링</td>
+        <td>경계 좌표 ref, hitState 시각 피드백</td>
+      </tr>
+      <tr>
+        <td>STEP 5</td>
+        <td><code>GameCanvas.tsx</code> 수정</td>
+        <td>전체 파이프라인 조립</td>
+        <td>레이저 궤적 Canvas + 힌트 시스템</td>
+      </tr>
+      <tr>
+        <td>STEP 6</td>
+        <td><code>DebugOverlay.tsx</code></td>
+        <td>판정 좌표 시각 검증</td>
+        <td>DEV 전용, 배포 시 자동 제거</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:16px;">
+    <div class="tip note">
+      <span class="tip-icon">📌</span>
+      <span><strong>각 프롬프트 앞에 항상 붙이기:</strong> <code style="color:#fbbf24; font-family:monospace; font-size:11.5px;">"This is for POLY M.A.P.S. Laser Hunter POC. Follow the existing types in game.types.ts and the folder structure we established."</code> — Cursor가 앞 단계 코드와 일관성 유지.</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>Korea Poly School ATLAS팀 · 임용주 차장 · <a href="../index.html">문서 보관함</a> · <a href="../maps/maps_activity3_tech_review.html">기술 검토서</a></span>
+  <span>TypeScript + React 19 + Vite 8.x · 2026.06.11</span>
+</footer>
+
+<script>
+function copyPrompt(btn) {
+  const box = btn.previousElementSibling;
+  const text = box.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '복사됨 ✓';
+    btn.style.color = '#4ade80';
+    setTimeout(() => { btn.textContent = '복사'; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
