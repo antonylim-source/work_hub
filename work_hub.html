@@ -76,6 +76,7 @@
   }
   .tab-btn:hover { background: var(--bg); color: var(--text); }
   .tab-btn.active { background: var(--accent); color: #fff; }
+  a.tab-btn { display: inline-block; text-decoration: none; line-height: 1.4; }
 
   /* ── 검색 ── */
   #search-wrap {
@@ -285,8 +286,9 @@
   <div id="logo">⚡ Work Hub</div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('work', this)">📋 프로젝트 링크</button>
-    <button class="tab-btn" onclick="switchTab('clip', this)">📌 클립보드</button>
+    <button class="tab-btn active" onclick="switchTab('work', this)">📁 프로젝트 링크</button>
+    <button class="tab-btn" onclick="switchTab('clip', this)">★ 클립보드</button>
+    <a class="tab-btn" href="docs/">📂 문서 보관함</a>
   </div>
 
   <div id="search-wrap">
