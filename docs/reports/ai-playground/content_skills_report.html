@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Playground 컨텐츠 언어 스킬 분류</title>
+<title>AI Playground 컨텐츠 스킬 분류</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
   :root {
-    --bg: #F8F9FB;
+    --sidebar-width: 220px;
+    --header-height: 56px;
+    --accent: #5B4FD9;
+    --accent-light: #EEF2FF;
+    --accent-hover: #4840B8;
+    --bg: #F5F6FA;
     --surface: #FFFFFF;
     --border: #E2E6EC;
     --text-primary: #1A1D23;
     --text-secondary: #5C6370;
     --text-muted: #9CA3AF;
-    --accent: #3B5BDB;
-    --accent-light: #EEF2FF;
     --writing: #2E7D32;
     --writing-bg: #F1F8E9;
     --reading: #1565C0;
@@ -26,6 +29,8 @@
     --listening-bg: #FFF3E0;
     --grammar: #00695C;
     --grammar-bg: #E0F2F1;
+    --vocabulary: #F57F17;
+    --vocabulary-bg: #FFF8E1;
     --mixed: #4E342E;
     --mixed-bg: #EFEBE9;
   }
@@ -36,89 +41,152 @@
     font-family: 'Noto Sans KR', 'Inter', sans-serif;
     background: var(--bg);
     color: var(--text-primary);
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.65;
   }
 
-  /* ─── COVER ─── */
-  .cover {
-    background: var(--accent);
-    color: #fff;
-    padding: 56px 64px 48px;
-    position: relative;
-    overflow: hidden;
-  }
-  .cover::after {
-    content: '';
-    position: absolute;
-    right: -60px; top: -60px;
-    width: 320px; height: 320px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.06);
-  }
-  .cover-label {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-bottom: 14px;
-  }
-  .cover h1 {
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 12px;
-  }
-  .cover-sub {
-    font-size: 16px;
-    opacity: 0.85;
-    margin-bottom: 32px;
-  }
-  .cover-meta {
+  /* ─── HEADER ─── */
+  .header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     display: flex;
-    gap: 32px;
-    font-size: 14px;
-    opacity: 0.85;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px 0 20px;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  .cover-meta span strong { opacity: 1; font-weight: 600; }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .header-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-badge {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
 
   /* ─── LAYOUT ─── */
-  .container {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 48px 48px 72px;
+  .layout {
+    display: flex;
+    padding-top: var(--header-height);
+    min-height: 100vh;
   }
 
-  /* ─── SECTION TITLE ─── */
-  .section-title {
-    font-size: 14px;
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 20px 0 40px;
+  }
+  .sidebar-group {
+    margin-bottom: 4px;
+  }
+  .sidebar-group-label {
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 20px 6px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar-item:hover {
+    background: var(--accent-light);
     color: var(--accent);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent-light);
+  }
+  .sidebar-item.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+    border-left-color: var(--accent);
+  }
+  .sidebar-item .icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
   }
 
-  .intro-text {
-    font-size: 16px;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-    line-height: 1.75;
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    padding: 40px 48px 80px;
+    max-width: calc(100% - var(--sidebar-width));
   }
-  .intro-text code {
-    background: var(--bg);
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  .intro-note {
-    font-size: 15px;
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb {
+    font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 40px;
-    line-height: 1.7;
+    margin-bottom: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .breadcrumb span { color: var(--accent); }
+
+  /* ─── SECTION ─── */
+  .section {
+    display: none;
+  }
+  .section.active {
+    display: block;
+  }
+
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .page-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    line-height: 1.75;
   }
 
   /* ─── SUMMARY CARDS ─── */
@@ -126,370 +194,402 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
   }
   .summary-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px 28px;
+    border-radius: 14px;
+    padding: 24px 26px;
+    transition: box-shadow 0.15s;
+  }
+  .summary-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   }
   .summary-card .count {
-    font-size: 42px;
+    font-size: 44px;
     font-weight: 700;
     line-height: 1;
     margin-bottom: 8px;
   }
   .summary-card .label {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--text-secondary);
     font-weight: 500;
   }
-  .card-writing .count { color: var(--writing); }
-  .card-reading .count { color: var(--reading); }
+  .card-writing .count  { color: var(--writing); }
+  .card-reading .count  { color: var(--reading); }
   .card-speaking .count { color: var(--speaking); }
-  .card-listening .count { color: var(--listening); }
-  .card-grammar .count { color: var(--grammar); }
-  .card-mixed .count { color: var(--mixed); }
+  .card-listening .count{ color: var(--listening); }
+  .card-grammar .count  { color: var(--grammar); }
+  .card-mixed .count    { color: var(--mixed); }
 
-  /* ─── SKILL TAG ─── */
-  .tag {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+  /* ─── OVERVIEW NOTE ─── */
+  .overview-note {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 22px;
+    margin-bottom: 36px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
   }
-  .tag-writing    { background: var(--writing-bg);   color: var(--writing); }
-  .tag-reading    { background: var(--reading-bg);   color: var(--reading); }
-  .tag-speaking   { background: var(--speaking-bg);  color: var(--speaking); }
-  .tag-listening  { background: var(--listening-bg); color: var(--listening); }
-  .tag-grammar    { background: var(--grammar-bg);   color: var(--grammar); }
-  .tag-vocabulary { background: #FFF8E1;             color: #F57F17; }
-  .tag-mixed      { background: var(--mixed-bg);     color: var(--mixed); }
+  .overview-note strong { color: var(--accent); }
 
-  /* ─── MAIN TABLE ─── */
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-light);
+  }
+
+  /* ─── TABLE ─── */
   .table-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
   }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+  table { width: 100%; border-collapse: collapse; }
   thead th {
     background: #F3F6FB;
-    padding: 14px 18px;
-    font-size: 13px;
-    font-weight: 600;
+    padding: 13px 18px;
+    font-size: 12px;
+    font-weight: 700;
     color: var(--text-secondary);
     text-align: left;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     border-bottom: 1px solid var(--border);
   }
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-  }
+  tbody tr { border-bottom: 1px solid var(--border); }
   tbody tr:nth-child(even) { background: #FAFCFE; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: #F0F4FA; }
-  td {
-    padding: 14px 18px;
-    vertical-align: middle;
-  }
-  .td-no {
-    color: var(--text-muted);
-    font-size: 14px;
-    width: 40px;
-    text-align: center;
-  }
-  .td-name {
-    font-weight: 600;
-    font-size: 16px;
-    min-width: 200px;
-    width: 24%;
-  }
-  .td-tags { white-space: nowrap; }
-  .td-tags .tag + .tag { margin-left: 6px; }
-  .td-note {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-  .td-thumb {
-    width: 96px;
-    padding: 10px 12px;
-  }
+  td { padding: 13px 18px; vertical-align: middle; }
+  .td-no { color: var(--text-muted); font-size: 13px; width: 40px; text-align: center; }
+  .td-thumb { width: 88px; padding: 10px 12px; }
   .td-thumb img {
-    width: 72px;
-    height: 72px;
+    width: 64px; height: 64px;
     object-fit: cover;
     border-radius: 10px;
     border: 1px solid var(--border);
     display: block;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   }
+  .td-name { font-weight: 600; font-size: 15px; min-width: 180px; }
+  .td-tags { white-space: nowrap; }
+  .td-tags .tag + .tag { margin-left: 5px; }
+  .td-note { font-size: 13px; color: var(--text-secondary); }
 
-  /* ─── SKILL GROUPS ─── */
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tag-writing    { background: var(--writing-bg);    color: var(--writing); }
+  .tag-reading    { background: var(--reading-bg);    color: var(--reading); }
+  .tag-speaking   { background: var(--speaking-bg);   color: var(--speaking); }
+  .tag-listening  { background: var(--listening-bg);  color: var(--listening); }
+  .tag-grammar    { background: var(--grammar-bg);    color: var(--grammar); }
+  .tag-vocabulary { background: var(--vocabulary-bg); color: var(--vocabulary); }
+  .tag-mixed      { background: var(--mixed-bg);      color: var(--mixed); }
+
+  /* ─── SKILL GROUP BLOCKS ─── */
   .group-block {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px 28px;
-    margin-bottom: 20px;
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.15s;
   }
+  .group-block:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
   .group-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .group-count {
     background: var(--accent-light);
     color: var(--accent);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    padding: 4px 12px;
+    padding: 3px 12px;
     border-radius: 20px;
   }
-  .group-title {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  .id-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .id-list { display: flex; flex-wrap: wrap; gap: 8px; }
   .id-chip {
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 6px 14px;
-    font-size: 14px;
-    font-family: 'Inter', monospace;
-    color: var(--text-secondary);
-  }
-
-  /* ─── RECOMMENDATION BOX ─── */
-  .rec-box {
-    background: var(--accent-light);
-    border-left: 4px solid var(--accent);
-    border-radius: 0 10px 10px 0;
-    padding: 20px 24px;
-    margin-bottom: 48px;
-  }
-  .rec-box h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 10px;
-  }
-  .rec-box p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.75;
-  }
-  pre.json {
-    background: #1A1D23;
-    color: #E8EDFF;
-    border-radius: 8px;
-    padding: 16px 20px;
-    font-size: 11px;
-    font-family: 'Inter', monospace;
-    line-height: 1.7;
-    overflow-x: auto;
-    margin-top: 12px;
-  }
-
-  /* ─── ESCAPE QUEST TABLE ─── */
-  .quest-table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 48px;
-  }
-  .quest-table-wrap table thead th { background: #F3F6FB; }
-  .quest-table-wrap td {
-    font-size: 15px;
-  }
-
-  /* ─── FOOTER ─── */
-  .footer {
-    text-align: center;
+    padding: 5px 13px;
     font-size: 13px;
-    color: var(--text-muted);
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-    line-height: 1.6;
+    font-family: 'Inter', monospace;
+    color: var(--text-secondary);
   }
 
-  @media print {
-    body { background: #fff; font-size: 13px; }
-    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .container { padding: 24px; }
-    .td-thumb img { width: 56px; height: 56px; }
+  /* ─── FLOATING BUTTON ─── */
+  .fab {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 48px; height: 48px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(91,79,217,0.35);
+    transition: background 0.15s, transform 0.15s;
+    z-index: 200;
   }
+  .fab:hover { background: var(--accent-hover); transform: translateY(-2px); }
 </style>
 </head>
 <body>
 
-<!-- COVER -->
-<div class="cover">
-  <div class="cover-label">AI Playground · ATLAS본부</div>
-  <h1>AI Playground 컨텐츠 스킬 분류 현황</h1>
-  <div class="cover-sub">컨텐츠 23개 액티비티 · 4 Skills 프레임워크 기반</div>
-  <div class="cover-meta">    
-    <span><strong>대상</strong>&nbsp; content 워크스페이스 23개</span>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">A</div>
+    <div class="header-title">AI Playground 컨텐츠 스킬 분류</div>
+  </div>
+  <div class="header-right">
+    <span class="header-badge">컨텐츠 23개 · 4 Skills</span>
+    <span class="header-badge">ATLAS본부</span>
   </div>
 </div>
 
-<div class="container">
+<!-- LAYOUT -->
+<div class="layout">
 
-  <!-- 1. 개요 -->
-  <div class="section-title">01 · 개요</div>
-  <p class="intro-text">
-    본 문서는 <code>content</code> 폴더 내 23개 독립 컨텐츠의 README, 기획서, <code>index.html</code>, 핵심 스크립트를 검토하여 교육적 스킬 소속을 추론·정리한 참고 자료입니다.
-  </p>
-  <p class="intro-note">
-    분류 기준: <strong>Primary</strong> — 학습자가 수행하는 핵심 과제 &nbsp;|&nbsp; <strong>Secondary</strong> — 과정에서 보조적으로 사용 &nbsp;|&nbsp; <strong>혼합</strong> — 두 스킬 이상 동등 핵심
-  </p>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">시작하기</div>
+      <a class="sidebar-item active" href="#" onclick="showSection('overview', this)">
+        <span class="icon">📋</span> 개요
+      </a>
+      <a class="sidebar-item" href="#" onclick="showSection('summary', this)">
+        <span class="icon">📊</span> 스킬별 집계
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">컨텐츠</div>
+      <a class="sidebar-item" href="#" onclick="showSection('list', this)">
+        <span class="icon">📝</span> 전체 목록
+      </a>
+      <a class="sidebar-item" href="#" onclick="showSection('skills', this)">
+        <span class="icon">🏷️</span> 스킬별 참조
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">상세</div>
+      <a class="sidebar-item" href="#" onclick="showSection('escape', this)">
+        <span class="icon">🔍</span> Escape 퀘스트
+      </a>
+    </div>
+  </nav>
 
-  <!-- 2. 집계 요약 -->
-  <div class="section-title">02 · 스킬별 집계 (Primary 기준)</div>
-  <div class="summary-grid">
-    <div class="summary-card card-writing">
-      <div class="count">8</div>
-      <div class="label">Writing 중심</div>
-    </div>
-    <div class="summary-card card-reading">
-      <div class="count">5</div>
-      <div class="label">Reading 중심</div>
-    </div>
-    <div class="summary-card card-speaking">
-      <div class="count">4</div>
-      <div class="label">Speaking 중심</div>
-    </div>
-    <div class="summary-card card-listening">
-      <div class="count">2</div>
-      <div class="label">Listening 중심</div>
-    </div>
-    <div class="summary-card card-grammar">
-      <div class="count">2</div>
-      <div class="label">Grammar / Vocabulary</div>
-    </div>
-    <div class="summary-card card-mixed">
-      <div class="count">3</div>
-      <div class="label">혼합 (Multi-skill)</div>
-    </div>
-  </div>
+  <!-- MAIN -->
+  <main class="main">
 
-  <!-- 3. 전체 목록 -->
-  <div class="section-title">03 · 전체 컨텐츠 목록</div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th class="td-no">#</th>
-          <th class="td-thumb"></th>
-          <th class="td-name">표시명</th>
-          <th>Primary Skill</th>
-          <th>Secondary</th>
-          <th>비고</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="td-no">1</td><td class="td-thumb"><img src="assets/images/thumbnail/animal-explorer.png" alt="Animal Explorer" loading="lazy"></td><td class="td-name">Animal Explorer</td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단서 듣고 동물 추론</td></tr>
-        <tr><td class="td-no">2</td><td class="td-thumb"><img src="assets/images/thumbnail/Avatar-Amigo.jpeg" alt="Avatar Amigo" loading="lazy"></td><td class="td-name">Avatar Amigo</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-note">대화 후 자기소개 글 생성</td></tr>
-        <tr><td class="td-no">3</td><td class="td-thumb"><img src="assets/images/thumbnail/Birthday-Card-Maker.jpeg" alt="Birthday Card Maker" loading="lazy"></td><td class="td-name">Birthday Card Maker</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">초대장 정보 영어 입력</td></tr>
-        <tr><td class="td-no">4</td><td class="td-thumb"><img src="assets/images/thumbnail/chef_chat_thumb.png" alt="Chef's Chat Kitchen" loading="lazy"></td><td class="td-name">Chef's Chat Kitchen</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-listening">Listening</span></td><td class="td-note">셰프와 대화·재료 선택</td></tr>
-        <tr><td class="td-no">5</td><td class="td-thumb"><img src="assets/images/thumbnail/Clue-Catcher.jpeg" alt="Clue Catcher" loading="lazy"></td><td class="td-name">Clue Catcher</td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-note">단서 듣고 답 말하기</td></tr>
-        <tr><td class="td-no">6</td><td class="td-thumb"><img src="assets/images/thumbnail/Emoji-Story-Chanin.jpeg" alt="Emoji Story Chain" loading="lazy"></td><td class="td-name">Emoji Story Chain</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-grammar">Grammar</span></td><td class="td-note">이모지 활용 영작</td></tr>
-        <tr><td class="td-no">7</td><td class="td-thumb"><img src="assets/images/thumbnail/Escape-the-Mystery-Room.jpeg" alt="Escape the Mystery Room" loading="lazy"></td><td class="td-name">Escape the Mystery Room</td><td class="td-tags"><span class="tag tag-mixed">혼합</span></td><td class="td-tags"><span class="tag tag-grammar">Grammar</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">어휘·문법·독해 통합</td></tr>
-        <tr><td class="td-no">8</td><td class="td-thumb"><img src="assets/images/thumbnail/fuel_your_words_thumb.png" alt="Fuel Your Words" loading="lazy"></td><td class="td-name">Fuel Your Words</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">카테고리 관련 단어 말하기</td></tr>
-        <tr><td class="td-no">9</td><td class="td-thumb"><img src="assets/images/thumbnail/ghost-buster.png" alt="Ghost Buster" loading="lazy"></td><td class="td-name">Ghost Buster</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span> <span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단어 타이핑·음성 입력</td></tr>
-        <tr><td class="td-no">10</td><td class="td-thumb"><img src="assets/images/thumbnail/Magic-Fortune.jpeg" alt="Magic Fortune English" loading="lazy"></td><td class="td-name">Magic Fortune English</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-grammar">Grammar</span></td><td class="td-note">운세/타로 문장 읽기</td></tr>
-        <tr><td class="td-no">11</td><td class="td-thumb"><img src="assets/images/thumbnail/Magic-Word-World.png" alt="Magic Word World" loading="lazy"></td><td class="td-name">Magic Word World</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-grammar">Grammar</span></td><td class="td-note">객관식 퀴즈</td></tr>
-        <tr><td class="td-no">12</td><td class="td-thumb"><img src="assets/images/thumbnail/news-creator.png" alt="News Creator" loading="lazy"></td><td class="td-name">News Creator</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-note">뉴스 기사 작성·편집</td></tr>
-        <tr><td class="td-no">13</td><td class="td-thumb"><img src="assets/images/thumbnail/picture-perfect-words.png" alt="Picture Perfect Words" loading="lazy"></td><td class="td-name">Picture Perfect Words</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-speaking">Speaking</span></td><td class="td-note">그림 묘사문 작성</td></tr>
-        <tr><td class="td-no">14</td><td class="td-thumb"><img src="assets/images/thumbnail/Rescue-the-Princess.jpeg" alt="Rescue the Princess" loading="lazy"></td><td class="td-name">Rescue the Princess</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span> <span class="tag tag-grammar">Grammar</span></td><td class="td-note">단어/문맥 선택 퀴즈</td></tr>
-        <tr><td class="td-no">15</td><td class="td-thumb"><img src="assets/images/thumbnail/Scoop-Up.png" alt="Scoop Up!" loading="lazy"></td><td class="td-name">Scoop Up!</td><td class="td-tags"><span class="tag tag-grammar">Grammar</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">문법 형태 선택 게임</td></tr>
-        <tr><td class="td-no">16</td><td class="td-thumb"><img src="assets/images/thumbnail/Sell-It.jpeg" alt="Sell It!" loading="lazy"></td><td class="td-name">Sell It!</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">설득 판매 대화</td></tr>
-        <tr><td class="td-no">17</td><td class="td-thumb"><img src="assets/images/thumbnail/Story-Builder.jpeg" alt="Story Builder" loading="lazy"></td><td class="td-name">Story Builder</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단어 선택 → 스토리 생성</td></tr>
-        <tr><td class="td-no">18</td><td class="td-thumb"><img src="assets/images/thumbnail/this-is-me.png" alt="This Is Me" loading="lazy"></td><td class="td-name">This Is Me</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">자기소개 정보 입력</td></tr>
-        <tr><td class="td-no">19</td><td class="td-thumb"><img src="assets/images/thumbnail/Treasure-Hunter.jpeg" alt="Treasure Hunter" loading="lazy"></td><td class="td-name">Treasure Hunter</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">영어 문장 입력 미션</td></tr>
-        <tr><td class="td-no">20</td><td class="td-thumb"><img src="assets/images/thumbnail/Voice-Actor.png" alt="Voice Actor" loading="lazy"></td><td class="td-name">Voice Actor</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-note">대본 읽고 녹음·더빙</td></tr>
-        <tr><td class="td-no">21</td><td class="td-thumb"><img src="assets/images/thumbnail/Volcano-Blaster.png" alt="Volcano Blaster" loading="lazy"></td><td class="td-name">Volcano Blaster</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">떨어지는 단어 타이핑</td></tr>
-        <tr><td class="td-no">22</td><td class="td-thumb"><img src="assets/images/thumbnail/whats-your-animal-type.png" alt="What's Your Animal Type?" loading="lazy"></td><td class="td-name">What's Your Animal Type?</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-listening">Listening</span></td><td class="td-note">동물 MBTI 문항 선택</td></tr>
-        <tr><td class="td-no">23</td><td class="td-thumb"><img src="assets/images/thumbnail/Word-Punch.jpeg" alt="Word Punch!" loading="lazy"></td><td class="td-name">Word Punch!</td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-note">카테고리 단어 인식</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- 01 개요 -->
+    <div class="section active" id="section-overview">
+      <div class="breadcrumb">시작하기 / <span>01</span></div>
+      <div class="page-title">개요</div>
+      <div class="page-desc">
+        본 문서는 <code style="background:var(--bg);padding:2px 7px;border-radius:4px;font-size:13px;">content</code> 폴더 내 23개 독립 컨텐츠의 README, 기획서, <code style="background:var(--bg);padding:2px 7px;border-radius:4px;font-size:13px;">index.html</code>, 핵심 스크립트를 검토하여 교육적 스킬 소속을 추론·정리한 참고 자료입니다.
+      </div>
+      <div class="overview-note">
+        분류 기준: <strong>Primary</strong> — 학습자가 수행하는 핵심 과제 &nbsp;|&nbsp; <strong>Secondary</strong> — 과정에서 보조적으로 사용 &nbsp;|&nbsp; <strong>혼합</strong> — 두 스킬 이상 동등 핵심<br>
+        집계 규칙: 컨텐츠 <strong>1개 = 카테고리 1개</strong> (배타적 분류). Primary가 하나면 해당 스킬 카테고리에, <strong>이중 Primary·통합형</strong>은 <strong>혼합</strong>에만 포함합니다. (합계 23)
+      </div>
+    </div>
 
-  <!-- 4. 스킬별 빠른 참조 -->
-  <div class="section-title">04 · 스킬별 빠른 참조</div>
+    <!-- 02 집계 -->
+    <div class="section" id="section-summary">
+      <div class="breadcrumb">시작하기 / <span>02</span></div>
+      <div class="page-title">스킬별 집계</div>
+      <div class="page-desc">배타적 분류 기준 집계입니다. 컨텐츠 1개는 하나의 카테고리에만 포함되며, 합계는 23입니다.</div>
+      <div class="summary-grid">
+        <div class="summary-card card-writing">
+          <div class="count">8</div>
+          <div class="label">Writing 중심</div>
+        </div>
+        <div class="summary-card card-reading">
+          <div class="count">4</div>
+          <div class="label">Reading 중심</div>
+        </div>
+        <div class="summary-card card-speaking">
+          <div class="count">5</div>
+          <div class="label">Speaking 중심</div>
+        </div>
+        <div class="summary-card card-grammar">
+          <div class="count">2</div>
+          <div class="label">Grammar / Vocabulary</div>
+        </div>
+        <div class="summary-card card-mixed">
+          <div class="count">4</div>
+          <div class="label">혼합 (Multi-skill)</div>
+        </div>
+      </div>
+    </div>
 
-  <div class="group-block">
-    <div class="group-header">
-      <span class="tag tag-writing">Writing</span>
-      <span class="group-count">8개</span>
+    <!-- 03 전체 목록 -->
+    <div class="section" id="section-list">
+      <div class="breadcrumb">컨텐츠 / <span>03</span></div>
+      <div class="page-title">전체 컨텐츠 목록</div>
+      <div class="page-desc">23개 액티비티의 Primary / Secondary 스킬 분류 목록입니다.</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="td-no">#</th>
+              <th class="td-thumb"></th>
+              <th class="td-name">표시명</th>
+              <th>Primary Skill</th>
+              <th>Secondary</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-no">1</td><td class="td-thumb"><img src="assets/images/thumbnail/animal-explorer.png" alt="Animal Explorer" loading="lazy"></td><td class="td-name">Animal Explorer</td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단서 듣고 동물 추론</td></tr>
+            <tr><td class="td-no">2</td><td class="td-thumb"><img src="assets/images/thumbnail/Avatar-Amigo.jpeg" alt="Avatar Amigo" loading="lazy"></td><td class="td-name">Avatar Amigo</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-note">대화 후 자기소개 글 생성</td></tr>
+            <tr><td class="td-no">3</td><td class="td-thumb"><img src="assets/images/thumbnail/Birthday-Card-Maker.jpeg" alt="Birthday Card Maker" loading="lazy"></td><td class="td-name">Birthday Card Maker</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">초대장 정보 영어 입력</td></tr>
+            <tr><td class="td-no">4</td><td class="td-thumb"><img src="assets/images/thumbnail/chef_chat_thumb.png" alt="Chef's Chat Kitchen" loading="lazy"></td><td class="td-name">Chef's Chat Kitchen</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-listening">Listening</span></td><td class="td-note">셰프와 대화·재료 선택</td></tr>
+            <tr><td class="td-no">5</td><td class="td-thumb"><img src="assets/images/thumbnail/Clue-Catcher.jpeg" alt="Clue Catcher" loading="lazy"></td><td class="td-name">Clue Catcher</td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-note">단서 듣고 답 말하기</td></tr>
+            <tr><td class="td-no">6</td><td class="td-thumb"><img src="assets/images/thumbnail/Emoji-Story-Chanin.jpeg" alt="Emoji Story Chain" loading="lazy"></td><td class="td-name">Emoji Story Chain</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-grammar">Grammar</span></td><td class="td-note">이모지 활용 영작</td></tr>
+            <tr><td class="td-no">7</td><td class="td-thumb"><img src="assets/images/thumbnail/Escape-the-Mystery-Room.jpeg" alt="Escape the Mystery Room" loading="lazy"></td><td class="td-name">Escape the Mystery Room</td><td class="td-tags"><span class="tag tag-mixed">혼합</span></td><td class="td-tags"><span class="tag tag-grammar">Grammar</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">어휘·문법·독해 통합</td></tr>
+            <tr><td class="td-no">8</td><td class="td-thumb"><img src="assets/images/thumbnail/fuel_your_words_thumb.png" alt="Fuel Your Words" loading="lazy"></td><td class="td-name">Fuel Your Words</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">카테고리 관련 단어 말하기</td></tr>
+            <tr><td class="td-no">9</td><td class="td-thumb"><img src="assets/images/thumbnail/ghost-buster.png" alt="Ghost Buster" loading="lazy"></td><td class="td-name">Ghost Buster</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span> <span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단어 타이핑·음성 입력</td></tr>
+            <tr><td class="td-no">10</td><td class="td-thumb"><img src="assets/images/thumbnail/Magic-Fortune.jpeg" alt="Magic Fortune English" loading="lazy"></td><td class="td-name">Magic Fortune English</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-grammar">Grammar</span></td><td class="td-note">운세/타로 문장 읽기</td></tr>
+            <tr><td class="td-no">11</td><td class="td-thumb"><img src="assets/images/thumbnail/Magic-Word-World.png" alt="Magic Word World" loading="lazy"></td><td class="td-name">Magic Word World</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-grammar">Grammar</span></td><td class="td-note">객관식 퀴즈</td></tr>
+            <tr><td class="td-no">12</td><td class="td-thumb"><img src="assets/images/thumbnail/news-creator.png" alt="News Creator" loading="lazy"></td><td class="td-name">News Creator</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-note">뉴스 기사 작성·편집</td></tr>
+            <tr><td class="td-no">13</td><td class="td-thumb"><img src="assets/images/thumbnail/picture-perfect-words.png" alt="Picture Perfect Words" loading="lazy"></td><td class="td-name">Picture Perfect Words</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-speaking">Speaking</span></td><td class="td-note">그림 묘사문 작성</td></tr>
+            <tr><td class="td-no">14</td><td class="td-thumb"><img src="assets/images/thumbnail/Rescue-the-Princess.jpeg" alt="Rescue the Princess" loading="lazy"></td><td class="td-name">Rescue the Princess</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span> <span class="tag tag-grammar">Grammar</span></td><td class="td-note">단어/문맥 선택 퀴즈</td></tr>
+            <tr><td class="td-no">15</td><td class="td-thumb"><img src="assets/images/thumbnail/Scoop-Up.png" alt="Scoop Up!" loading="lazy"></td><td class="td-name">Scoop Up!</td><td class="td-tags"><span class="tag tag-grammar">Grammar</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">문법 형태 선택 게임</td></tr>
+            <tr><td class="td-no">16</td><td class="td-thumb"><img src="assets/images/thumbnail/Sell-It.jpeg" alt="Sell It!" loading="lazy"></td><td class="td-name">Sell It!</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">설득 판매 대화</td></tr>
+            <tr><td class="td-no">17</td><td class="td-thumb"><img src="assets/images/thumbnail/Story-Builder.jpeg" alt="Story Builder" loading="lazy"></td><td class="td-name">Story Builder</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단어 선택 → 스토리 생성</td></tr>
+            <tr><td class="td-no">18</td><td class="td-thumb"><img src="assets/images/thumbnail/this-is-me.png" alt="This Is Me" loading="lazy"></td><td class="td-name">This Is Me</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">자기소개 정보 입력</td></tr>
+            <tr><td class="td-no">19</td><td class="td-thumb"><img src="assets/images/thumbnail/Treasure-Hunter.jpeg" alt="Treasure Hunter" loading="lazy"></td><td class="td-name">Treasure Hunter</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">영어 문장 입력 미션</td></tr>
+            <tr><td class="td-no">20</td><td class="td-thumb"><img src="assets/images/thumbnail/Voice-Actor.png" alt="Voice Actor" loading="lazy"></td><td class="td-name">Voice Actor</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-note">대본 읽고 녹음·더빙</td></tr>
+            <tr><td class="td-no">21</td><td class="td-thumb"><img src="assets/images/thumbnail/Volcano-Blaster.png" alt="Volcano Blaster" loading="lazy"></td><td class="td-name">Volcano Blaster</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">떨어지는 단어 타이핑</td></tr>
+            <tr><td class="td-no">22</td><td class="td-thumb"><img src="assets/images/thumbnail/whats-your-animal-type.png" alt="What's Your Animal Type?" loading="lazy"></td><td class="td-name">What's Your Animal Type?</td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-listening">Listening</span></td><td class="td-note">동물 MBTI 문항 선택</td></tr>
+            <tr><td class="td-no">23</td><td class="td-thumb"><img src="assets/images/thumbnail/Word-Punch.jpeg" alt="Word Punch!" loading="lazy"></td><td class="td-name">Word Punch!</td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span></td><td class="td-note">카테고리 단어 인식</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="id-list">
-      <span class="id-chip">emoji_story_chain</span><span class="id-chip">news_creator</span><span class="id-chip">story_builder</span><span class="id-chip">treasure_hunter</span><span class="id-chip">birthday_card_maker</span><span class="id-chip">this_is_me</span><span class="id-chip">picture_perfect_words</span><span class="id-chip">volcano_blaster</span>
-    </div>
-  </div>
 
-  <div class="group-block">
-    <div class="group-header">
-      <span class="tag tag-reading">Reading</span>
-      <span class="group-count">7개 (혼합 포함)</span>
-    </div>
-    <div class="id-list">
-      <span class="id-chip">clue_catcher</span><span class="id-chip">animal_explorer</span><span class="id-chip">magic_fortune</span><span class="id-chip">magic_word_world</span><span class="id-chip">whats_your_animal_type</span><span class="id-chip">rescue_the_princess</span><span class="id-chip">escape_the_mystery_room*</span>
-    </div>
-  </div>
+    <!-- 04 스킬별 참조 -->
+    <div class="section" id="section-skills">
+      <div class="breadcrumb">컨텐츠 / <span>04</span></div>
+      <div class="page-title">스킬별 빠른 참조</div>
+      <div class="page-desc">배타적 분류 기준 그룹입니다. 이중 Primary·통합형 컨텐츠는 혼합 그룹에만 포함됩니다.</div>
 
-  <div class="group-block">
-    <div class="group-header">
-      <span class="tag tag-speaking">Speaking</span>
-      <span class="group-count">4개</span>
-    </div>
-    <div class="id-list">
-      <span class="id-chip">fuel_your_words</span><span class="id-chip">sell_it</span><span class="id-chip">voice_actor</span><span class="id-chip">chefs_chat_kitchen</span>
-    </div>
-  </div>
+      <div class="group-block">
+        <div class="group-header">
+          <span class="tag tag-writing">Writing</span>
+          <span class="group-count">8개</span>
+        </div>
+        <div class="id-list">
+          <span class="id-chip">birthday_card_maker</span><span class="id-chip">emoji_story_chain</span><span class="id-chip">news_creator</span><span class="id-chip">picture_perfect_words</span><span class="id-chip">story_builder</span><span class="id-chip">this_is_me</span><span class="id-chip">treasure_hunter</span><span class="id-chip">volcano_blaster</span>
+        </div>
+      </div>
 
-  <div class="group-block">
-    <div class="group-header">
-      <span class="tag tag-grammar">Grammar / Vocabulary</span>
-      <span class="group-count">2개</span>
-    </div>
-    <div class="id-list">
-      <span class="id-chip">scoop_up</span><span class="id-chip">word_punch</span>
-    </div>
-  </div>
+      <div class="group-block">
+        <div class="group-header">
+          <span class="tag tag-reading">Reading</span>
+          <span class="group-count">4개</span>
+        </div>
+        <div class="id-list">
+          <span class="id-chip">magic_fortune</span><span class="id-chip">magic_word_world</span><span class="id-chip">rescue_the_princess</span><span class="id-chip">whats_your_animal_type</span>
+        </div>
+      </div>
 
-  <!-- 5. Escape 퀘스트 상세 -->
-  <div class="section-title">05 · Escape the Mystery Room — 퀘스트별 스킬</div>
-  <div class="quest-table-wrap">
-    <table>
-      <thead>
-        <tr><th>퀘스트</th><th>카테고리</th><th>관련 스킬</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Quest 1, 2</td><td>Vocabulary</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-vocabulary">Vocab</span></td></tr>
-        <tr><td>Quest 3</td><td>Grammar Puzzle</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-grammar">Grammar</span></td></tr>
-        <tr><td>Quest 4</td><td>Reading &amp; Riddle</td><td><span class="tag tag-reading">Reading</span></td></tr>
-      </tbody>
-    </table>
-  </div>
+      <div class="group-block">
+        <div class="group-header">
+          <span class="tag tag-speaking">Speaking</span>
+          <span class="group-count">5개</span>
+        </div>
+        <div class="id-list">
+          <span class="id-chip">avatar_amigo</span><span class="id-chip">chefs_chat_kitchen</span><span class="id-chip">fuel_your_words</span><span class="id-chip">sell_it</span><span class="id-chip">voice_actor</span>
+        </div>
+      </div>
 
+      <div class="group-block">
+        <div class="group-header">
+          <span class="tag tag-grammar">Grammar / Vocabulary</span>
+          <span class="group-count">2개</span>
+        </div>
+        <div class="id-list">
+          <span class="id-chip">scoop_up</span><span class="id-chip">word_punch</span>
+        </div>
+      </div>
+
+      <div class="group-block">
+        <div class="group-header">
+          <span class="tag tag-mixed">혼합 (Multi-skill)</span>
+          <span class="group-count">4개</span>
+        </div>
+        <div class="id-list">
+          <span class="id-chip">animal_explorer</span><span class="id-chip">clue_catcher</span><span class="id-chip">escape_the_mystery_room</span><span class="id-chip">ghost_buster</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 Escape 퀘스트 -->
+    <div class="section" id="section-escape">
+      <div class="breadcrumb">상세 / <span>05</span></div>
+      <div class="page-title">Escape the Mystery Room</div>
+      <div class="page-desc">퀘스트별 스킬 매핑 상세 정보입니다.</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>퀘스트</th><th>카테고리</th><th>관련 스킬</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Quest 1, 2</td><td>Vocabulary</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-vocabulary">Vocab</span></td></tr>
+            <tr><td>Quest 3</td><td>Grammar Puzzle</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-grammar">Grammar</span></td></tr>
+            <tr><td>Quest 4</td><td>Reading &amp; Riddle</td><td><span class="tag tag-reading">Reading</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
 </div>
+
+<!-- 플로팅 버튼 -->
+<button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="맨 위로">↑</button>
+
+<script>
+  function showSection(id, el) {
+    event.preventDefault();
+    // 섹션 전환
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    // 사이드바 활성화
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+</script>
 </body>
 </html>
