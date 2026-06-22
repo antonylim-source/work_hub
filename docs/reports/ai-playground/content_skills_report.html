@@ -359,6 +359,31 @@
     z-index: 200;
   }
   .fab:hover { background: var(--accent-hover); transform: translateY(-2px); }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+    .sidebar-group { display: flex; flex-direction: row; align-items: center; margin-bottom: 0; }
+    .sidebar-group-label { display: none; }
+    .sidebar-item { white-space: nowrap; padding: 8px 16px; border-left: none; border-bottom: 3px solid transparent; }
+    .sidebar-item.active { border-left: none; border-bottom-color: var(--accent); }
+    .layout { flex-direction: column; }
+    .main { margin-left: 0; max-width: 100%; padding: 24px 16px 60px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .header-right { display: none; }
+    .td-thumb { display: none; }
+    .td-note { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -370,7 +395,7 @@
     <div class="header-title">AI Playground 컨텐츠 스킬 분류</div>
   </div>
   <div class="header-right">
-    <span class="header-badge">컨텐츠 23개 · 4 Skills</span>
+    <span class="header-badge">컨텐츠 23개 · 4 Skills + G/V</span>
     <span class="header-badge">ATLAS본부</span>
   </div>
 </div>
@@ -398,12 +423,6 @@
         <span class="icon">🏷️</span> 스킬별 참조
       </a>
     </div>
-    <div class="sidebar-group">
-      <div class="sidebar-group-label">상세</div>
-      <a class="sidebar-item" href="#" onclick="showSection('escape', this)">
-        <span class="icon">🔍</span> Escape 퀘스트
-      </a>
-    </div>
   </nav>
 
   <!-- MAIN -->
@@ -427,6 +446,9 @@
       <div class="breadcrumb">시작하기 / <span>02</span></div>
       <div class="page-title">스킬별 집계</div>
       <div class="page-desc">배타적 분류 기준 집계입니다. 컨텐츠 1개는 하나의 카테고리에만 포함되며, 합계는 23입니다.</div>
+      <div class="overview-note">
+        ℹ️ <strong>Listening</strong>은 Secondary로는 여러 컨텐츠에서 활용되지만, 이번 23개 컨텐츠 중 <strong>Listening만 단독 Primary인 컨텐츠는 없습니다.</strong> Listening이 포함된 항목은 혼합(Multi-skill) 또는 타 스킬 Primary로 분류되었습니다.
+      </div>
       <div class="summary-grid">
         <div class="summary-card card-writing">
           <div class="count">8</div>
@@ -439,6 +461,10 @@
         <div class="summary-card card-speaking">
           <div class="count">5</div>
           <div class="label">Speaking 중심</div>
+        </div>
+        <div class="summary-card card-listening" style="opacity:0.45;">
+          <div class="count" style="color:var(--listening);">0</div>
+          <div class="label">Listening 중심 <span style="font-size:11px;color:var(--text-muted);">(Secondary로만 활용)</span></div>
         </div>
         <div class="summary-card card-grammar">
           <div class="count">2</div>
@@ -495,6 +521,24 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Escape 퀘스트 상세 (인라인) -->
+      <div class="section-label" style="margin-top:8px;">🔍 Escape the Mystery Room — 퀘스트별 스킬 상세</div>
+      <div class="overview-note" style="margin-bottom:20px;">
+        <strong>Escape the Mystery Room</strong>은 Quest별로 활용 스킬이 다른 <strong>혼합(Multi-skill)</strong> 컨텐츠입니다. 퀘스트 구성은 아래와 같습니다.
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>퀘스트</th><th>카테고리</th><th>관련 스킬</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Quest 1, 2</td><td>Vocabulary</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-vocabulary">Vocab</span></td></tr>
+            <tr><td>Quest 3</td><td>Grammar Puzzle</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-grammar">Grammar</span></td></tr>
+            <tr><td>Quest 4</td><td>Reading &amp; Riddle</td><td><span class="tag tag-reading">Reading</span></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- 04 스킬별 참조 -->
@@ -533,6 +577,17 @@
         </div>
       </div>
 
+      <div class="group-block" style="opacity:0.6;">
+        <div class="group-header">
+          <span class="tag tag-listening">Listening</span>
+          <span class="group-count" style="background:#FFF3E0;color:var(--listening);">0개 (Primary 없음)</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Secondary로 활용되는 컨텐츠:</div>
+        <div class="id-list">
+          <span class="id-chip">animal_explorer</span><span class="id-chip">chefs_chat_kitchen</span><span class="id-chip">clue_catcher</span><span class="id-chip">magic_fortune</span><span class="id-chip">magic_word_world</span><span class="id-chip">whats_your_animal_type</span>
+        </div>
+      </div>
+
       <div class="group-block">
         <div class="group-header">
           <span class="tag tag-grammar">Grammar / Vocabulary</span>
@@ -554,26 +609,8 @@
       </div>
     </div>
 
-    <!-- 05 Escape 퀘스트 -->
-    <div class="section" id="section-escape">
-      <div class="breadcrumb">상세 / <span>05</span></div>
-      <div class="page-title">Escape the Mystery Room</div>
-      <div class="page-desc">퀘스트별 스킬 매핑 상세 정보입니다.</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>퀘스트</th><th>카테고리</th><th>관련 스킬</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Quest 1, 2</td><td>Vocabulary</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-vocabulary">Vocab</span></td></tr>
-            <tr><td>Quest 3</td><td>Grammar Puzzle</td><td><span class="tag tag-writing">Writing</span> <span class="tag tag-grammar">Grammar</span></td></tr>
-            <tr><td>Quest 4</td><td>Reading &amp; Riddle</td><td><span class="tag tag-reading">Reading</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
 
-  </main>
+</main>
 </div>
 
 <!-- 플로팅 버튼 -->
