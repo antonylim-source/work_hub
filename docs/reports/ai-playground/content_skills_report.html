@@ -447,7 +447,7 @@
       <div class="page-title">스킬별 집계</div>
       <div class="page-desc">배타적 분류 기준 집계입니다. 컨텐츠 1개는 하나의 카테고리에만 포함되며, 합계는 23입니다.</div>
       <div class="overview-note">
-        ℹ️ <strong>Listening</strong>은 Secondary로는 여러 컨텐츠에서 활용되지만, 이번 23개 컨텐츠 중 <strong>Listening만 단독 Primary인 컨텐츠는 없습니다.</strong> Listening이 포함된 항목은 혼합(Multi-skill) 또는 타 스킬 Primary로 분류되었습니다.
+        ℹ️ <strong>Listening</strong>은 Secondary로도 여러 컨텐츠에서 활용됩니다. 이번 23개 컨텐츠 중 <strong>Listening만 단독 Primary인 컨텐츠는 Chef's Chat Kitchen 1개</strong>입니다. 그 외 Listening이 포함된 항목은 혼합(Multi-skill) 또는 타 스킬 Primary로 분류되었습니다.
       </div>
       <div class="summary-grid">
         <div class="summary-card card-writing">
@@ -459,12 +459,12 @@
           <div class="label">Reading 중심</div>
         </div>
         <div class="summary-card card-speaking">
-          <div class="count">5</div>
+          <div class="count">4</div>
           <div class="label">Speaking 중심</div>
         </div>
-        <div class="summary-card card-listening" style="opacity:0.45;">
-          <div class="count" style="color:var(--listening);">0</div>
-          <div class="label">Listening 중심 <span style="font-size:11px;color:var(--text-muted);">(Secondary로만 활용)</span></div>
+        <div class="summary-card card-listening">
+          <div class="count" style="color:var(--listening);">1</div>
+          <div class="label">Listening 중심</div>
         </div>
         <div class="summary-card card-grammar">
           <div class="count">2</div>
@@ -498,7 +498,7 @@
             <tr><td class="td-no">1</td><td class="td-thumb"><img src="assets/images/thumbnail/animal-explorer.png" alt="Animal Explorer" loading="lazy"></td><td class="td-name">Animal Explorer</td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">단서 듣고 동물 추론</td></tr>
             <tr><td class="td-no">2</td><td class="td-thumb"><img src="assets/images/thumbnail/Avatar-Amigo.jpeg" alt="Avatar Amigo" loading="lazy"></td><td class="td-name">Avatar Amigo</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-note">대화 후 자기소개 글 생성</td></tr>
             <tr><td class="td-no">3</td><td class="td-thumb"><img src="assets/images/thumbnail/Birthday-Card-Maker.jpeg" alt="Birthday Card Maker" loading="lazy"></td><td class="td-name">Birthday Card Maker</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">초대장 정보 영어 입력</td></tr>
-            <tr><td class="td-no">4</td><td class="td-thumb"><img src="assets/images/thumbnail/chef_chat_thumb.png" alt="Chef's Chat Kitchen" loading="lazy"></td><td class="td-name">Chef's Chat Kitchen</td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-listening">Listening</span></td><td class="td-note">셰프와 대화·재료 선택</td></tr>
+            <tr><td class="td-no">4</td><td class="td-thumb"><img src="assets/images/thumbnail/chef_chat_thumb.png" alt="Chef's Chat Kitchen" loading="lazy"></td><td class="td-name">Chef's Chat Kitchen</td><td class="td-tags"><span class="tag tag-listening">Listening</span></td><td class="td-tags"><span class="tag tag-reading">Reading</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">TTS 질문 듣고 재료 어휘 선택</td></tr>
             <tr><td class="td-no">5</td><td class="td-thumb"><img src="assets/images/thumbnail/Clue-Catcher.jpeg" alt="Clue Catcher" loading="lazy"></td><td class="td-name">Clue Catcher</td><td class="td-tags"><span class="tag tag-listening">Listening</span> <span class="tag tag-reading">Reading</span></td><td class="td-tags"><span class="tag tag-speaking">Speaking</span></td><td class="td-note">단서 듣고 답 말하기</td></tr>
             <tr><td class="td-no">6</td><td class="td-thumb"><img src="assets/images/thumbnail/Emoji-Story-Chanin.jpeg" alt="Emoji Story Chain" loading="lazy"></td><td class="td-name">Emoji Story Chain</td><td class="td-tags"><span class="tag tag-writing">Writing</span></td><td class="td-tags"><span class="tag tag-grammar">Grammar</span></td><td class="td-note">이모지 활용 영작</td></tr>
             <tr><td class="td-no">7</td><td class="td-thumb"><img src="assets/images/thumbnail/Escape-the-Mystery-Room.jpeg" alt="Escape the Mystery Room" loading="lazy"></td><td class="td-name">Escape the Mystery Room</td><td class="td-tags"><span class="tag tag-mixed">혼합</span></td><td class="td-tags"><span class="tag tag-grammar">Grammar</span> <span class="tag tag-vocabulary">Vocab</span></td><td class="td-note">어휘·문법·독해 통합</td></tr>
@@ -570,21 +570,24 @@
       <div class="group-block">
         <div class="group-header">
           <span class="tag tag-speaking">Speaking</span>
-          <span class="group-count">5개</span>
+          <span class="group-count">4개</span>
         </div>
         <div class="id-list">
-          <span class="id-chip">avatar_amigo</span><span class="id-chip">chefs_chat_kitchen</span><span class="id-chip">fuel_your_words</span><span class="id-chip">sell_it</span><span class="id-chip">voice_actor</span>
+          <span class="id-chip">avatar_amigo</span><span class="id-chip">fuel_your_words</span><span class="id-chip">sell_it</span><span class="id-chip">voice_actor</span>
         </div>
       </div>
 
-      <div class="group-block" style="opacity:0.6;">
+      <div class="group-block">
         <div class="group-header">
           <span class="tag tag-listening">Listening</span>
-          <span class="group-count" style="background:#FFF3E0;color:var(--listening);">0개 (Primary 없음)</span>
+          <span class="group-count" style="background:#FFF3E0;color:var(--listening);">1개</span>
         </div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Secondary로 활용되는 컨텐츠:</div>
         <div class="id-list">
-          <span class="id-chip">animal_explorer</span><span class="id-chip">chefs_chat_kitchen</span><span class="id-chip">clue_catcher</span><span class="id-chip">magic_fortune</span><span class="id-chip">magic_word_world</span><span class="id-chip">whats_your_animal_type</span>
+          <span class="id-chip">chefs_chat_kitchen</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);margin:14px 0 10px;">Secondary로 활용되는 컨텐츠:</div>
+        <div class="id-list">
+          <span class="id-chip">animal_explorer</span><span class="id-chip">clue_catcher</span><span class="id-chip">magic_fortune</span><span class="id-chip">magic_word_world</span><span class="id-chip">whats_your_animal_type</span>
         </div>
       </div>
 
