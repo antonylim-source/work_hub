@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -955,3 +956,964 @@ $(document).on("keydown", function(e){
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>[●Work Hub]</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --border: #e2e0db;
+    --border2: #ccc9c2;
+    --text: #1a1917;
+    --text2: #6b6860;
+    --text3: #9e9b94;
+    --accent: #2c6e49;
+    --accent2: #1a4731;
+    --accent-bg: #e8f4ed;
+    --tab-active: #2c6e49;
+    --tab-inactive: #9e9b94;
+    --red: #c0392b;
+    --blue: #1d5fa3;
+    --orange: #c26d1a;
+    --tag-blue: #dbeafe;
+    --tag-blue-t: #1e40af;
+    --tag-green: #dcfce7;
+    --tag-green-t: #166534;
+    --tag-yellow: #fef9c3;
+    --tag-yellow-t: #854d0e;
+    --tag-red: #fee2e2;
+    --tag-red-t: #991b1b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --radius: 7px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', Malgun Gothic, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  /* ── 상단 헤더 ── */
+  #header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center;
+    padding: 0 20px;
+    height: 50px; gap: 8px;
+  }
+
+  #logo {
+    font-weight: 700; font-size: 15px;
+    color: var(--accent2);
+    letter-spacing: -0.3px;
+    margin-right: 12px;
+    white-space: nowrap;
+  }
+
+  /* ── 탭 ── */
+  .tabs { display: flex; gap: 4px; }
+  .tab-btn {
+    padding: 6px 14px; border-radius: 20px; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    background: transparent; color: var(--tab-inactive);
+    transition: all .18s;
+  }
+  .tab-btn:hover { background: var(--bg); color: var(--text); }
+  .tab-btn.active { background: var(--accent); color: #fff; }
+  a.tab-btn { display: inline-block; text-decoration: none; line-height: 1.4; }
+
+  /* ── 검색 ── */
+  #search-wrap {
+    margin-left: auto; display: flex; align-items: center; gap: 8px;
+  }
+  #search-box {
+    width: 220px; height: 32px; padding: 0 12px;
+    border: 1px solid var(--border2); border-radius: 20px;
+    font-size: 12px; font-family: inherit;
+    background: var(--bg); color: var(--text);
+    outline: none; transition: border-color .15s, width .2s;
+  }
+  #search-box:focus { border-color: var(--accent); width: 280px; }
+  #search-box::placeholder { color: var(--text3); }
+
+  .header-link {
+    font-size: 12px; color: var(--text3); padding: 4px 8px;
+    border-radius: var(--radius); white-space: nowrap;
+    transition: background .15s;
+  }
+  .header-link:hover { background: var(--bg); color: var(--text2); }
+
+  /* ── 본문 ── */
+  #body { padding-top: 60px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── 검색 결과 패널 ── */
+  #search-panel {
+    display: none; padding: 20px;
+  }
+  #search-panel.visible { display: block; }
+  #search-results { display: flex; flex-direction: column; gap: 6px; }
+  .search-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    transition: border-color .15s;
+  }
+  .search-item:hover { border-color: var(--accent); }
+  .search-item a { color: var(--blue); font-size: 13px; }
+  .search-item .si-cat {
+    font-size: 11px; background: var(--accent-bg); color: var(--accent2);
+    padding: 2px 8px; border-radius: 10px; white-space: nowrap;
+  }
+  .search-empty { color: var(--text3); text-align: center; padding: 40px; }
+
+  /* ─────────────────────────────────────────
+     탭①  프로젝트 링크 (work_list)
+  ───────────────────────────────────────── */
+  #tab-work { padding: 20px; }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 1400px;
+  }
+  @media (max-width: 900px) { .work-grid { grid-template-columns: 1fr; } }
+
+  /* 프로젝트 카드 */
+  .prj-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .prj-head {
+    padding: 10px 14px;
+    background: #4a5568; color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+    transition: background .15s;
+  }
+  .prj-head:hover { filter: brightness(1.1); }
+  .prj-head.bg-on  { background: #2c6e49; }
+  .prj-head.bg-1   { background: #e5e3df; color: #333; border-bottom: 1px solid var(--border); }
+  .prj-head.bg-2   { background: #fdf7d4; color: #333; border-bottom: 1px solid #e8df98; }
+
+  .prj-head .h-title { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .prj-head .h-badge {
+    font-size: 10px; padding: 1px 7px; border-radius: 10px;
+    background: rgba(255,255,255,.2); color: inherit;
+  }
+  .prj-head.bg-1 .h-badge, .prj-head.bg-2 .h-badge { background: rgba(0,0,0,.08); }
+
+  .prj-head .toggle-icon { font-size: 11px; opacity: .6; transition: transform .2s; }
+  .prj-card.collapsed .toggle-icon { transform: rotate(-90deg); }
+
+  .prj-body {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .prj-card.collapsed .prj-body { display: none; }
+
+  /* 서브타이틀 */
+  .sub-title {
+    font-size: 11px; font-weight: 700; color: var(--text2);
+    background: var(--bg); padding: 3px 8px; border-radius: 4px;
+    margin: 10px 0 6px; display: inline-block;
+  }
+
+  /* 링크 항목 */
+  .prj-body ul { list-style: none; padding: 0; }
+  .prj-body li { margin: 4px 0; }
+  .prj-body li a {
+    color: var(--blue); font-size: 12px;
+    padding: 2px 0; display: inline;
+  }
+  .prj-body li a:hover { text-decoration: underline; }
+  .prj-body li a.clip-link {
+    color: var(--red); font-style: italic;
+  }
+  .prj-body li a.clip-link:hover { text-decoration: underline; }
+  .prj-body li a.clip-link-blue { color: var(--blue); font-style: italic; }
+
+  .prj-body li strong { font-weight: 600; }
+  .prj-body li > p { margin: 2px 0 2px 12px; color: var(--text2); font-size: 11px; }
+
+  /* 하이라이트 항목 */
+  .prj-body .hl-yellow { background: #fffde7; border-radius: 4px; padding: 6px 10px; margin: 6px 0; }
+
+  /* 클립보드 복사 버튼 인라인 */
+  .clip-inline {
+    display: inline-block; cursor: pointer;
+    color: var(--red); font-style: italic; font-size: 12px;
+  }
+  .clip-inline:hover { text-decoration: underline; }
+
+  /* 구분선 */
+  .divider { border: none; border-top: 1px dashed var(--border2); margin: 8px 0; }
+
+  /* 오른쪽 사이드 앵커 메뉴 */
+  #side-nav {
+    position: fixed; right: 16px; bottom: 100px; z-index: 90;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .side-link {
+    display: block; padding: 5px 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; font-size: 11px; color: var(--text2);
+    box-shadow: var(--shadow); transition: all .15s; white-space: nowrap;
+  }
+  .side-link:hover { background: var(--accent-bg); color: var(--accent2); border-color: var(--accent); }
+
+  /* ─────────────────────────────────────────
+     탭②  클립보드
+  ───────────────────────────────────────── */
+  #tab-clip { padding: 20px; }
+
+  .clip-grid {
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;
+  }
+  .clip-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .clip-section.w-sm { width: 240px; }
+  .clip-section.w-md { width: 320px; }
+  .clip-section.w-lg { width: 420px; }
+
+  .clip-head {
+    background: #2fe0d4; color: #fff;
+    padding: 8px 14px; font-weight: 700; font-size: 13px;
+    cursor: pointer;
+  }
+  .clip-head a { color: #fff; }
+  .clip-head:hover { filter: brightness(.95); }
+
+  .clip-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .clip-table th, .clip-table td {
+    padding: 8px 10px; text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .clip-table tr:last-child th, .clip-table tr:last-child td { border-bottom: none; }
+  .clip-table th { font-weight: 600; }
+  .clip-table td { color: var(--text2); }
+
+  /* 복사 버튼 스타일 a 태그 */
+  .cb-btn {
+    display: block; cursor: pointer;
+    padding: 4px 6px; border-radius: 4px;
+    transition: background .15s; font-size: 12px;
+  }
+  .cb-btn:hover { background: var(--accent-bg); }
+  .cb-btn.red { color: var(--red); font-weight: 600; }
+  .cb-btn.blue { color: var(--blue); font-weight: 600; }
+  .cb-btn.green { color: #166534; font-weight: 600; }
+  .cb-btn.brown { color: #7c4d20; }
+
+  /* ── 토스트 ── */
+  #toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1a1917; color: #fff;
+    padding: 9px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 9999; white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ 상단 헤더 ════════════════ -->
+<div id="header">
+  <div id="logo">⚡ Work Hub</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('work', this)">📁 프로젝트 링크</button>
+    <button class="tab-btn" onclick="switchTab('clip', this)">★ 클립보드</button>
+    <a class="tab-btn" href="docs/">📂 문서 보관함</a>
+  </div>
+
+  <div id="search-wrap">
+    <input id="search-box" type="text" placeholder="🔍 링크/제목 검색…" oninput="doSearch(this.value)"/>
+    <a class="header-link" href="https://keep.google.com/u/0/#label/POLY%20%EB%A9%94%EB%AA%A8" target="_blank">📝 Keep</a>
+    <a class="header-link" href="https://mail.google.com/" target="_blank">✉ Mail</a>
+  </div>
+</div>
+
+<!-- ════════════════ 토스트 ════════════════ -->
+<div id="toast">복사되었습니다 ✓</div>
+
+<!-- ════════════════ 검색 결과 ════════════════ -->
+<div id="search-panel">
+  <div id="search-results"></div>
+</div>
+
+<!-- ════════════════ 본문 ════════════════ -->
+<div id="body">
+
+<!-- ── 탭① 프로젝트 링크 ── -->
+<div id="tab-work" class="tab-panel active">
+
+  <!-- 오른쪽 앵커 메뉴 -->
+  <div id="side-nav">
+    <a class="side-link" href="#sec-memo">📋 메모</a>
+    <a class="side-link" href="#sec-sr">📁 SR관리</a>
+    <a class="side-link" href="#sec-sys">⚙ 시스템</a>
+    <a class="side-link" href="#sec-canb">🟢 canB</a>
+    <a class="side-link" href="#sec-idn">🌏 인도네시아</a>
+    <a class="side-link" href="#sec-dttt">📘 DTTT</a>
+    <a class="side-link" href="#sec-nacdttt">📗 NAC DTTT</a>
+    <a class="side-link" href="#sec-efl">📙 canB중등</a>
+    <a class="side-link" href="#sec-pepper">🌶 Pepper</a>
+    <a class="side-link" href="#sec-ecp7">🖥 ECP7</a>
+  </div>
+
+  <div class="work-grid">
+
+    <!-- ── Col 1 ── -->
+    <div>
+
+      <!-- 메모/일일업무 -->
+      <div id="sec-memo" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-2" onclick="toggleCard(this)">
+          <div class="h-title">📋 메모 &amp; 일일업무</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1uce8aBTBXqJ-2za2OggZrC2mqjFbRYGHB0-z1gyGqis/edit?pli=1#gid=0" target="_blank">📝 메모1 (구글시트)</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/15C_UkqcAYtIJDiYn-uVFIqQbSvPXv_0Lc1SuR_Xc0cQ/edit?pli=1&gid=1130917328#gid=1130917328" target="_blank">📕 일일업무</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1RUP8dOS7rlERipjtmg56KFH3iChOyBrI/edit?gid=752331851#gid=752331851" target="_blank">📘 주간 성과관리 보고</a></li>
+            <li><a href="https://docs.google.com/document/d/1K7sro2l0Y_WnGsMAUdeT8H_pClWetOJCsz3aFbZ6e1M/edit" target="_blank">📜 POLY 메모</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1zQQ4-3RNLQ9ZJQoi-S0wNLgXJSn80OFT0UnGihT_sIE/edit#gid=0" target="_blank">🔐 my POLY 계정</a></li>
+            <li><a href="https://drive.google.com/drive/u/1/folders/0AI-j8IPh2GLDUk9PVA" target="_blank">🗂 G Suite : 내 드라이브</a></li>
+			<li><a href="https://drive.google.com/drive/u/0/folders/0AGpIErgq2z5gUk9PVA" target="_blank">🗂 Google Drive : Temporary_FileShare</a></li>			
+            <li><a href="https://translate.google.co.kr/" target="_blank">🌐 구글번역기</a></li>
+            <li><a href="http://125.60.70.86/TTS.html" target="_blank">🔊 POLY TTS</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- iCreate 저작기 -->
+      <div class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-1" onclick="toggleCard(this)">
+          <div class="h-title">iCreate 저작기 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/document/d/1ob2MvoklvDLUJSk-gHSjSR4THo80AmL0vVHgkhyBZB8/edit" target="_blank">📑 저작기 이슈 문서</a></li>
+            <li><a href="https://docs.google.com/open?id=1m4jr1EuJh1KbhwR-5-N3AujyIQAuA7kc-uoNwcjxWh8&authuser=antony.lim%40edu-poly.com&usp=drive_fs" target="_blank">🔎 스크립트 유틸</a></li>
+            <li><a href="https://docs.google.com/document/d/1Wgei0lPnr1rk5HDnbZPD6xBSjX19JURtdCQjn5U-BbI/edit" target="_blank">🆑 UI개선 단축키</a></li>
+            <li>
+              <a href="https://docs.google.com/spreadsheets/d/1GeHr95VKi8Y9zkF8bHaZZXJylgBx-tWh/edit#gid=565217158" target="_blank">✅ 템플릿 개발 유형</a> /
+              <a href="https://docs.google.com/spreadsheets/d/1GeHr95VKi8Y9zkF8bHaZZXJylgBx-tWh/edit#gid=850813252" target="_blank">API문서</a> /
+              <a href="https://docs.google.com/spreadsheets/d/1GeHr95VKi8Y9zkF8bHaZZXJylgBx-tWh/edit#gid=1975770947" target="_blank">주석</a> /
+              <a href="https://docs.google.com/spreadsheets/d/1GeHr95VKi8Y9zkF8bHaZZXJylgBx-tWh/edit#gid=93689374" target="_blank">변수명 짓기</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 외부교육 -->
+      <div class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-1" onclick="toggleCard(this)">
+          <div class="h-title">외부교육 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><strong>전영웅 과장님</strong> ( hero@bluega.com ) ☎ 070-8228-8723 / 010-4329-0607</li>
+            <li><a href="https://docs.google.com/document/d/1uxE2UzJ7le8m1vJOtW4XHZKsu6FF_nnlELrj-bbRz9g/edit" target="_blank"><strong style="color:var(--blue)">위젯개발 교육내용 정리</strong></a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="D:\001. MyWork\000. iCreate">📁 D:\001. MyWork\000. iCreate</span></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\admin.it.devops3\OP_ContentPart\02. 저작기\[ 3 ] 위젯개발\07. 위젯개발가이드">📁 위젯개발가이드 경로</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 마스터 템플릿 -->
+      <div class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-2" onclick="toggleCard(this)">
+          <div class="h-title">마스터 템플릿 관리 및 저작문서 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1DwFt_6mMwQ5UP4SNfN7HnvpMXa0u_jKO/edit#gid=1700362357" target="_blank">POND</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1xWBaV2yh8PUVohQAzF6EcQAcqvyaMh0o/edit#gid=1838126544" target="_blank">e-Learning</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1JJT_2pyzsI43_Q3WtoVhvNl4eKyOi3bZ/edit#gid=478265902" target="_blank">DTTT서비스 운영 / 저작리스트</a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-Team-개발2팀\01_Content Part\01. 서비스\105_저작문서" style="color:var(--blue)">📁 105_저작문서 경로</span></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-Team-개발2팀\01_Content Part\01. 서비스\106_API 명세서" style="color:var(--blue)">📁 106_API 명세서 경로</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SR 관리 -->
+      <div id="sec-sr" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head" onclick="toggleCard(this)">
+          <div class="h-title">SR 관리 및 문서 정리 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li style="color:var(--text2);font-size:11px">📁 G:\공유 드라이브\KR-IT-Team-개발2팀\01_Content Part\01. 서비스\103_DTTT_SR 보고</li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=588431958" target="_blank">SR문서정리</a> | <a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=935058940" target="_blank">SR로그 확인방법</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L8Xj-AlS6l4JQrfSLO66tudDc4allws-xldPzyEU3wY/edit?pli=1&gid=0#gid=0" target="_blank">#캔비업무지원 채널</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 시스템 및 접속 -->
+      <div id="sec-sys" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head" onclick="toggleCard(this)">
+          <div class="h-title">시스템 및 접속 관련 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=257396606" target="_blank">운영DB접속 (컨텐츠조회, icreate권한)</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=1962849684" target="_blank">AWS콘솔 (로그확인 / iCreate서버 모니터링)</a></li>
+            <li><a href="https://dash.cdnetworks.com/" target="_blank">CDNetworks 플러싱</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit?gid=742398485#gid=742398485" target="_blank">NAC POND 학생 성적확인 방법</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1zQQ4-3RNLQ9ZJQoi-S0wNLgXJSn80OFT0UnGihT_sIE/edit#gid=1594089543" target="_blank"><strong>CANB SUM 로그인</strong> / 학생성적 확인</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1zQQ4-3RNLQ9ZJQoi-S0wNLgXJSn80OFT0UnGihT_sIE/edit#gid=304751653" target="_blank">TLMS 접속 가이드</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1zQQ4-3RNLQ9ZJQoi-S0wNLgXJSn80OFT0UnGihT_sIE/edit?gid=667271557#gid=667271557" target="_blank">런처권한 설정 가이드</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1zQQ4-3RNLQ9ZJQoi-S0wNLgXJSn80OFT0UnGihT_sIE/edit?gid=1330260873#gid=1330260873" target="_blank">iCreate 접속 권한/비번 변경 가이드</a></li>
+            <li><a href="https://sr.koreapolyschool.com/" target="_blank">Service Request 접속 (KIS 계정으로)</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit?gid=1114701620#gid=1114701620" target="_blank">MobaXterm 접속 (tomcat 계정으로)</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=1667068662" target="_blank">POND런처 로컬DB 테스트, SQLite 가이드</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=1110180692" target="_blank">파일이관 (수동모드)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 컨텐츠 수정 -->
+      <div class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head" onclick="toggleCard(this)">
+          <div class="h-title">컨텐츠 수정 및 개발 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1KqyyJ_dRtcQM1Vn24B_pUTOSkvI3LUwc/edit#gid=1532037934" target="_blank">CANBON컨텐츠 js외부파일 경로</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=151257396" target="_blank">e-POLY 컨텐츠 수정 반영 방법</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit?gid=2045577798#gid=2045577798" target="_blank">e-Book 나오게 수정 방법</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit?gid=168878841#gid=168878841" target="_blank">리다렉션 조치</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 근태 및 행정 -->
+      <div class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head" onclick="toggleCard(this)">
+          <div class="h-title">근태 및 행정 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=385618419" target="_blank">근태소명자료</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1L6XeI3kmJiI8PWvDE1YTvdG1Jre-cf8O/edit#gid=742398485" target="_blank">NAC POND 학생성적 확인</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ECP Phonics -->
+      <div class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head" onclick="toggleCard(this)">
+          <div class="h-title">ECP Phonics 발음평가 <span class="h-badge">N</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1HSLbmEtAxzT7TZXZDO7n86RcGRGecgOM/edit#gid=513762832" target="_blank">🔗 발음평가 템플릿 4주차 저작 리스트</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Pepper Reading -->
+      <div id="sec-pepper" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head" onclick="toggleCard(this)">
+          <div class="h-title">🌶 Pepper Reading <span class="h-badge">No3</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1ZBSejKGAzaUs1xZQ46Xm-VAeWPnjYvgOvfO_3i-Ceck/edit#gid=334013059" target="_blank"><strong style="background:#dbeafe;padding:1px 6px;border-radius:4px;color:#1e40af">저작리스트 페이지</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/17l59G2panlagYIn5DTeI_uN0mo3k6bYcKUEdhyEblps/edit#gid=0" target="_blank">수정리스트</a></li>
+            <li><a href="https://docs.google.com/document/d/1IRtuvPbCOTsoNi6TqP2hzrsRSE-AFS99FtpDnuTJTPc/edit" target="_blank">수정방법</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1kRMcXROjSO4Y9SsxzTvIaV7vyrwfoSJ73nNjvetSk54/edit?ts=5d707a13#gid=975799921" target="_blank">R&amp;D공유 @PR: Flashcard TTS</a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="D:\001. MyWork\03. Pepper Reading\pepper_stabilizing\PepperReading_Publising" style="color:var(--blue)">📁 프론트 퍼블리싱 svn 위치</span></li>
+            <li><a href="http://devpepper.koreapolyschool.com/pepper_reading/#/login" target="_blank">🔗 devpage</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- e-POLY 개편 ECP7 -->
+      <div id="sec-ecp7" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-on" onclick="toggleCard(this)">
+          <div class="h-title">e-POLY 개편 (ECP7 Immersion) <span class="h-badge">No2</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1P6Wu6soU3AzCvn3wZsInmLUo2OdpMJKf/edit#gid=1549733728" target="_blank">🔗 ECP7 Immersion 템플릿 개발 리스트</a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-공유NAS\01.Project\2020\Pjt-05_ECP7 개편 (Immersion & Clubhouse)\02_관리" style="color:var(--blue)">📁 ECP7 WBS 폴더 위치</span></li>
+            <li><a href="https://app.zeplin.io/projects?pid=5edf56279cba589a2dc8dad7" target="_blank">🎨 디자인(Zeplin)</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1XbYVCXL1saX2tHmJTbvXUv9DVyq1U_-XAS-oPLfOBx4/edit#gid=1140276673" target="_blank">ECP7 Immersion Activity 명칭</a></li>
+            <li><a href="https://drive.google.com/drive/folders/1Gilrn7HLMBC1ec6E7S-ViYGL7rcQY6JL?usp=sharing" target="_blank">ECP7 R&amp;D 리소스 공유드라이브</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1XhWQZQoItsZUiBv6nAHhsYabIY7RZMQy/edit#gid=749994886" target="_blank">ECP7 Immersion iCreate Content List (by R&amp;D)</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /col1 -->
+
+    <!-- ── Col 2 ── -->
+    <div>
+
+      <!-- 인도네시아 -->
+      <div id="sec-idn" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-on" onclick="toggleCard(this)">
+          <div class="h-title">🌏 인도네시아 <span class="h-badge">No1</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1uce8aBTBXqJ-2za2OggZrC2mqjFbRYGHB0-z1gyGqis/edit?pli=1&gid=754869131#gid=754869131" target="_blank">IDN STEP-UP e-POLY</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- canB 중등 -->
+      <div id="sec-efl" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-on" onclick="toggleCard(this)">
+          <div class="h-title">🟡 canB 중등 <span class="h-badge">No1</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://app.zeplin.io/project/64362a834f184725c2e43876" target="_blank">🎨 디자인(Zeplin)</a></li>
+            <li><strong>CANB 중등 디자인 일정</strong><p>G:\공유 드라이브\KR-IT-공유Projects-2023\Pjt-04-2_CANB 중등 컨텐츠 추가 개발\02_관리\01_WBS</p></li>
+            <li><strong>CANB 중등 기획서 위치</strong><p>G:\공유 드라이브\KR-IT-공유Projects-2023\...\03_기획\05_화면설계</p></li>
+            <li><strong>내컴 CANB 중등 관리</strong><p>D:\001. MyWork\05. canB\13.중등</p></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1P4UuwVPgHA2qJkekDxvhHmYNTZiwZfWe/edit#gid=559569132" target="_blank">🔗 CANB 중등 스케줄 공유</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- canB -->
+      <div id="sec-canb" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-on" onclick="toggleCard(this)">
+          <div class="h-title">🟢 canB <span class="h-badge">No1</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://docs.google.com/spreadsheets/d/1uce8aBTBXqJ-2za2OggZrC2mqjFbRYGHB0-z1gyGqis/edit?pli=1#gid=2121771693" target="_blank">🎫 CANB 테스트 계정</a></li>
+            <li><a href="https://app.zeplin.io/project/5eb89ee259d7ca4da5c72f1b" target="_blank">🎨 디자인(Zeplin)</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/11cbr4t0VFigb0rDz4s7L472pcBzl_X5vnB7AgiC9qmY/edit?pli=1&gid=0#gid=0" target="_blank"><strong>📄 Hey, Kate 발음평가 개선 개발</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1cJHuMrjW2R-rc82n2KvAL92V3rZvxXqH/edit?pli=1&gid=1913856224#gid=1913856224" target="_blank"><strong>📄 Hey, Kate 템플릿 수정 내역</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1XE3hp6lcXi4blZcjlRbdNPqLkote6Du429mMJZ---k8/edit?pli=1&gid=0#gid=0" target="_blank"><strong>📄 Writing 컨텐츠 개발 관리</strong></a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-2021-EFL신규학원-4.기획-LV.2\Pjt-28-6_학습컨텐츠 개발" style="color:var(--red)">📁 템플릿 개발 기획서 위치</span></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-Team-개발2팀\01_Content Part\01. 서비스\14. EFL" style="color:var(--text)">📁 템플릿 개발 진행문서</span></li>
+
+            <hr class="divider"/>
+            <li><a href="https://docs.google.com/spreadsheets/d/1m-yvy-3xuw9A-AfMMGDVtDFyCVXz2aAm/edit#gid=1876312221" target="_blank"><strong>📅 HeyKate 저작 컨텐츠 코드 23년 (Spring)</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1htiovQOImAwT9k9kvF6--SfEVjy5jcXZ/edit#gid=883224268" target="_blank"><strong>📅 HeyKate 저작 컨텐츠 코드 23년 (Fall)</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1IpjLWBd0i7eXY62vGrJ2WFvwqmwVdw4W/edit#gid=603188695" target="_blank"><strong>📅 e-Learning_Writing Center 저작코드 23년 (Spring)</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1reKPQPVekMVW453PLZ8Ey8-wRaUbs3klr3dF5nT-UfY/edit?pli=1" target="_blank"><strong>📅 CanB컨텐츠 저작 문서(기타)</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/16Eo5kx0vUXim1hgfA2c9XaLM5Zu62FcC/edit#gid=185176013" target="_blank"><strong style="color:var(--blue)">📅 CanBe 테스트 컨텐츠, heykate 외</strong></a></li>
+
+            <hr class="divider"/>
+            <li><a href="https://docs.google.com/spreadsheets/d/1HVFtqo9DZTh29opmwW_NAI_8AWGRIohN/edit#gid=1612084089" target="_blank"><strong style="color:green">📅 CANB 레벨별_운영서버_학생 ID_배정명단</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1HrCFIlejhVs1Gooj7dDVoKCoi1ZmB4Nt/edit#gid=116776920" target="_blank"><strong style="color:green">📅 CanB DTTT 템플릿 개발리스트</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/17sFHbbBYC1Hlt8omfFd-d2_mo7vm6Lkf/edit#gid=116776920" target="_blank"><strong>📅 EFL inclass 재사용 리스트 🟢</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1GdrDJQJKUs_1BkyUtppgyB10_8xhICEK/edit#gid=932392645" target="_blank"><strong style="color:var(--red)">🔗 e-Learning EFL 런처-컨텐츠 API 정의서</strong></a></li>
+
+            <hr class="divider"/>
+            <div class="sub-title">🟩 CANBON 런처</div>
+            <li><a href="https://file.keecon.dev" target="_blank"><strong>🔗 Download</strong> ( id: poly-canb, pwd: poly1234 )</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- NAC DTTT -->
+      <div id="sec-nacdttt" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-on" onclick="toggleCard(this)">
+          <div class="h-title">📗 NAC DTTT <span class="h-badge">No1</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://zpl.io/bJKQrw9" target="_blank">🎨 디자인(Zeplin)</a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-2021-EFL신규학원-4.기획-LV.2" style="color:var(--red)">📁 공유 드라이브: 기획서 위치</span></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-Team-개발2팀\01_Content Part\01. 서비스\07. DTTT\06. 참고자료\DTTT_템플릿진행 상황.xlsx">📁 공유 드라이브: 템플릿 진행 리스트</span></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1Oiyu0L-0Q0UUHKznONI2_4k8ElAri2xl/edit#gid=2101584308" target="_blank">🔗 NAC_DTTT 템플릿 개발 리스트</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- DTTT -->
+      <div id="sec-dttt" class="prj-card" style="margin-bottom:16px">
+        <div class="prj-head bg-on" onclick="toggleCard(this)">
+          <div class="h-title">📘 DTTT (전자교과서) <span class="h-badge">No1</span></div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="prj-body">
+          <ul>
+            <li><a href="https://zpl.io/bJKQrw9" target="_blank">🎨 DTTT 디자인(Zeplin)</a></li>
+            <li><a href="https://drive.google.com/drive/u/1/folders/1fpDVI9i-a9Q_MhcjdanBsZDNVaIlHKWd" target="_blank">🔗 API 컨텐츠연동 정의서</a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-2019-DTTT-10.외주사-키콘-LV.3\5.개발가이드\2.컨텐츠연동">📁 API 연동 정의서 위치</span></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/11w-LqJlazqprV8Q9yqTK-zwfoQHGaTxkmigWHmioSBY/edit#gid=1343041790" target="_blank" style="color:green"><strong>🔗 Reading Wizard / Reading Quest 템플릿 개발문서</strong></a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="D:\001. MyWork\05. DTTT [전자교과서]\2020년\20200311 s-POLY ReadingWizard 템플릿 완료버튼 적용 공통팝업 제작">📁 self 컨텐츠 list 위치</span></li>
+
+            <hr class="divider"/>
+            <li><a href="https://docs.google.com/spreadsheets/d/1qYbOaoxvinN9LVyDPK60u50UM7TXbNC3AVriIL8cTxU/edit#gid=1565841173" target="_blank"><strong>DTTT API 연동정의서</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1ao8yBuOskG0nXwpSSOGcHWK-mF6gVO-06GchBlBfTrs/edit#gid=0" target="_blank"><strong>DTTT iCreate Content Code (by R&amp;D)</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1hElKhDnjWX7t0rI_ZoDbmCzxSp2Yrgb2/edit#gid=1166769201" target="_blank"><strong>DTTT iCreate Content Code (by 컨텐츠 파트)</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1RJfwJoT2Xwf3-0RuFf0VUU3y6RwY322N/edit#gid=570236344" target="_blank"><strong style="background:#dcfce7;padding:1px 6px;border-radius:4px;color:#166534">✅ DTTT_Level 추가 템플릿 진행 상황 _ self</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1TPrYh29upyzWlOBV2vQF6QhBgfARcuXI/edit#gid=1165116086" target="_blank"><strong style="background:#dcfce7;padding:1px 6px;border-radius:4px;color:#166534">✅ DTTT_Level 추가 템플릿 진행 상황 (by 컨텐츠 파트)</strong></a></li>
+            <li><a href="https://docs.google.com/presentation/d/17o3p6yBDeSt7C0fwzlL0dbAvHYpdIE1e/edit#slide=id.p1" target="_blank"><strong>✅ DTTT_컨텐츠 화면별 팝업 구성</strong></a></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-2020-DTTT-과목추가-2.기획_디자인" style="color:var(--red)">📁 DTTT 화면기획서 위치</span></li>
+            <li><span class="clip-inline aclip" data-clipboard-text="G:\공유 드라이브\KR-IT-2020-DTTT-과목추가-2.기획_디자인\03. SW\03. 디자인" style="color:var(--blue)">📁 DTTT 디자인 리소스 위치</span></li>
+
+            <hr class="divider"/>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OhkP95WaNQH9z44qeqoATa3tCWDYPdVu/edit#gid=880028380" target="_blank"><strong style="color:#800000">🔗 【 기획 Part 】 i-create 템플릿 리스트</strong></a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OplUbhphnQcYhawThAnwEdl8wSmqf20O/edit#gid=1931568794" target="_blank">🔗 DTTT_템플릿개발 관리서</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OkkyI-EPFZ9CgLbxNvGBzmvFrpV90WAH/edit#gid=336450070" target="_blank">🔗 STEPUP_DTTT_RM 템플릿 개발 리스트</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OjyCr7slAE_Qf8cfOB99egp6tXuqqsQ-/edit#gid=1562221099" target="_blank">🔗 STEPUP_DTTT_SW_SQ 템플릿 개발 리스트</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OpIw1Y4ZI0AoLqEM11RDQ0NKKgu4l4Wh/edit#gid=1652374062" target="_blank">🔗 STEPUP_DTTT_LW_LQ 템플릿 개발 리스트</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OpV_qK5pgsM-d5S_-gL_0CCsqE5OOMB5/edit#gid=327227777" target="_blank">🔗 STEPUP_DTTT_ES123 템플릿 개발 리스트</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1OnCt_1ANQagNY6Hn5gq03W4lv2z6XEYH/edit#gid=331490647" target="_blank">🔗 STEPUP_DTTT_PH 템플릿 개발 리스트</a></li>
+
+            <hr class="divider"/>
+            <div class="hl-yellow">
+              <a href="https://docs.google.com/spreadsheets/d/17Py-Ult6lvaV5ijqrMfH6zk5YhM-XAms/edit#gid=1358773719" target="_blank">📌 DTTT back, complete 추가작업</a>
+            </div>
+            <div class="sub-title">🟢 DTTT 런처 NEW 사이트</div>
+            <li><a href="https://file.keecon.dev" target="_blank"><strong>🔗 Download</strong> ( id: poly-pond, pwd: poly1234 )</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /col2 -->
+
+  </div><!-- /work-grid -->
+</div><!-- /tab-work -->
+
+
+<!-- ── 탭② 클립보드 ── -->
+<div id="tab-clip" class="tab-panel">
+<div id="tab-clip-inner" style="padding:20px">
+<div class="clip-grid">
+
+  <!-- POLY 기본 -->
+  <div class="clip-section w-md">
+    <div class="clip-head"><a href="http://polymine.edu-poly.com/projects/ai-projecw/issues" target="_blank">POLY 기본</a></div>
+    <table class="clip-table">
+      <tr><th colspan="3"><a href="https://docs.google.com/spreadsheets/d/1zQQ4-3RNLQ9ZJQoi-S0wNLgXJSn80OFT0UnGihT_sIE/edit#gid=0" target="_blank" style="color:var(--red)">🔐 my POLY 계정</a></th></tr>
+      <tr><th colspan="3"><a href="https://docs.google.com/spreadsheets/d/15C_UkqcAYtIJDiYn-uVFIqQbSvPXv_0Lc1SuR_Xc0cQ/edit?pli=1&gid=744836138#gid=744836138" target="_blank">📕 일일업무</a></th></tr>
+      <tr><th colspan="3"><a href="https://docs.google.com/spreadsheets/d/1RUP8dOS7rlERipjtmg56KFH3iChOyBrI/edit?gid=752331851#gid=752331851" target="_blank">📘 주간 성과관리 보고</a></th></tr>
+      <tr><th colspan="3"><a href="https://docs.google.com/document/d/1K7sro2l0Y_WnGsMAUdeT8H_pClWetOJCsz3aFbZ6e1M/edit" target="_blank">📜 POLY 메모</a></th></tr>
+      <tr><th colspan="3"><a id="copy_itr_5_2" class="cb-btn">📅 오늘날짜 복사</a></th></tr>
+      <tr><th colspan="3"><a id="copy_itr_6_10" class="cb-btn brown">antony.lim@edu-poly.com 로그인 PW</a></th></tr>
+      <tr>
+        <th><a href="http://polymine.edu-poly.com/projects/ai-projecw/issues" target="_blank" style="color:var(--red)">레드마인</a></th>
+        <td><a id="copy_itr_6_1" class="cb-btn">ID</a></td>
+        <td><a id="copy_itr_6_2" class="cb-btn">PW</a></td>
+      </tr>
+      <tr>
+        <th><a href="https://app.smartsheet.com/sheets/GPhQ7v8vjQgcrcCQMQRCQr2QG9rgxHQXhHMjVwm1?view=grid" target="_blank" style="color:var(--blue)">smartsheet</a></th>
+        <td><a id="copy_itr_8" class="cb-btn">ID</a></td>
+        <td><a id="copy_itr_9" class="cb-btn">PW</a></td>
+      </tr>
+      <tr><th colspan="2" style="color:var(--blue)">S-POLY Launcher</th><td><a href="http://dev.keecon.com/poly/" target="_blank">URL</a></td></tr>
+      <tr><th colspan="3"><a href="http://125.60.70.86/TTS.html" target="_blank" style="color:var(--blue)">POLY TTS</a></th></tr>
+      <tr><th colspan="3"><a href="https://translate.google.co.kr/" target="_blank" style="color:var(--blue)">구글번역기</a></th></tr>
+      <tr><th colspan="3"><a href="https://drive.google.com/drive/u/1/folders/0AI-j8IPh2GLDUk9PVA" target="_blank">G Suite : 내 드라이브</a></th></tr>
+    </table>
+  </div>
+
+  <!-- VN이관 작업 -->
+  <div class="clip-section w-sm">
+    <div class="clip-head">VN이관 작업</div>
+    <table class="clip-table">
+      <tr><th><a id="copy_itr_10" class="cb-btn red">🔑 원격 데스크톱 연결 비번</a></th></tr>
+      <tr><th><a href="https://docs.google.com/document/d/1r26oi8Usw-ceaW-ykCE3UhokkU3VFsIltzo6KsJuIBw/edit" target="_blank">📗 VN메일 가이드</a></th></tr>
+      <tr><th><a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox/FMfcgzGkZGjrngdxGpknxtmwFXqtxvbV" target="_blank">📧 DTTT이관 메일 [샘플]</a></th></tr>
+      <tr><th><a href="https://drive.google.com/drive/folders/17h-ru02ee_OqOc7De3DGmh3EOpouwITw" target="_blank">📥 Download zip파일 URL</a></th></tr>
+    </table>
+  </div>
+
+  <!-- 시간외 수당 -->
+  <div class="clip-section w-md">
+    <div class="clip-head">시간외 수당</div>
+    <table class="clip-table">
+      <tr>
+        <th><a id="copy_1001" class="cb-btn green">사전보고서 제목</a></th>
+        <th><a id="copy_1002" class="cb-btn" style="color:var(--red)">사후결과보고서 제목</a></th>
+      </tr>
+      <tr>
+        <th><a id="copy_1003" class="cb-btn">평일시간</a></th>
+        <th><a id="copy_1004" class="cb-btn blue">주말시간</a></th>
+      </tr>
+      <tr><th colspan="2"><a id="copy_1005" class="cb-btn" style="color:#0e7490">My Time</a></th></tr>
+      <tr><th colspan="2"><a id="copy_1006" class="cb-btn green">지출결의 타이틀</a></th></tr>
+    </table>
+  </div>
+
+  <!-- ECP5 -->
+  <div class="clip-section w-sm">
+    <div class="clip-head">ECP5</div>
+    <table class="clip-table">
+      <tr><th>교사용</th><td><a href="http://kis.koreapolyschool.com" target="_blank">테스트</a></td></tr>
+      <tr>
+        <th>관리자</th>
+        <td>
+          <a id="copy_grp1_1" class="cb-btn">ID</a>
+          <a id="copy_grp1_2" class="cb-btn">PW</a>
+        </td>
+      </tr>
+      <tr><th>디자인(학생용)</th><td><a href="https://zpl.io/b63P5Wy" target="_blank">zpl.io</a></td></tr>
+      <tr><th>PCViewer</th><td><a id="copy_grp1_3" class="cb-btn">URL 복사</a></td></tr>
+      <tr><th>PCViewer</th><td><a href="https://docs.google.com/spreadsheets/d/1e-zlY9vuAgN22cR8eyPfHfLDMiRWGEX9CeZ-qw8E1gQ/edit#gid=807538078" target="_blank">testID</a></td></tr>
+    </table>
+  </div>
+
+  <!-- Pepper Reading -->
+  <div class="clip-section w-sm">
+    <div class="clip-head">Pepper Reading</div>
+    <table class="clip-table">
+      <tr>
+        <th><a href="http://devpepper.koreapolyschool.com/pepper_reading/#/login" target="_blank">devpage</a></th>
+        <td><a id="copy_305" class="cb-btn">ID</a></td>
+        <td><a id="copy_306" class="cb-btn">PW</a></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 내 IP주소 -->
+  <div class="clip-section w-sm">
+    <div class="clip-head">내 IP주소</div>
+    <table class="clip-table">
+      <tr><th>IP주소</th><td><a id="copy_401" class="cb-btn">복사</a></td></tr>
+      <tr><th>서브넷 마스크</th><td><a id="copy_402" class="cb-btn">복사</a></td></tr>
+      <tr><th>기본 게이트웨이</th><td><a id="copy_403" class="cb-btn">복사</a></td></tr>
+      <tr><th style="background:var(--bg)">기본 DNS</th><td><a id="copy_404" class="cb-btn">복사</a></td></tr>
+      <tr><th style="background:var(--bg)">보조 DNS</th><td><a id="copy_405" class="cb-btn">복사</a></td></tr>
+    </table>
+  </div>
+
+</div><!-- /clip-grid -->
+</div>
+</div><!-- /tab-clip -->
+
+</div><!-- /body -->
+
+<script>
+// ── 날짜 유틸 ──
+function padZ(n){ return n<10?'0'+n:n; }
+function getDateStr(d, sep){ return d.getFullYear()+sep+padZ(d.getMonth()+1)+sep+padZ(d.getDate()); }
+function today(sep){ return getDateStr(new Date(), sep); }
+function lastWeek(n){var d=new Date();d.setDate(d.getDate()-n);return getDateStr(d,'.');}
+function getDayLabel(){var w=['(일)','(월)','(화)','(수)','(목)','(금)','(토)'];return w[new Date().getDay()];}
+function getFormattedNow(){var d=new Date();return String(d.getFullYear()).slice(-2)+padZ(d.getMonth()+1)+padZ(d.getDate())+'_'+padZ(d.getHours())+'-'+padZ(d.getMinutes());}
+
+var _nowDate = getFormattedNow();
+var OvertimeTitle_1 = "[사전]격려수당 신청서_IT사업본부 개발2팀_임용주 과장_"+today('.')+getDayLabel();
+var OvertimeTitle_2 = "[사후]격려수당 결과보고서_IT사업본부 개발2팀_임용주 과장_"+today('.')+getDayLabel();
+var Overtime_date_1 = today('.')+getDayLabel()+" 18:00 ~ 22:30";
+var Overtime_date_2 = today('.')+getDayLabel()+" 09:00 ~ 19:00";
+var Overtime_date_3 = today('.')+getDayLabel()+" 07:15 ~ 17:15";
+var expDay1 = lastWeek(7).split('20').pop();
+var expDay2 = lastWeek(1).split('20').pop();
+var expenTitle = "IT 사업본부 - 개발2팀 경비("+expDay1+" ~ "+expDay2+")";
+
+// ── 클립보드 목록 ──
+$(function(){
+  var cpLst = [
+    {id:"#copy_itr_5_2", tx:_nowDate},
+    {id:"#copy_itr_6_1", tx:"antony.lim"},
+    {id:"#copy_itr_6_10",tx:"poly%3033!"},
+    {id:"#copy_itr_6_2", tx:"poly%4321"},
+    {id:"#copy_itr_8",   tx:"antony.lim@koreapolyschool.com"},
+    {id:"#copy_itr_9",   tx:"poly&30330"},
+    {id:"#copy_itr_10",  tx:"wqdqwrf34!!54g"},
+    {id:"#copy_grp1_1",  tx:"kps9974"},
+    {id:"#copy_grp1_2",  tx:"0000"},
+    {id:"#copy_grp1_3",  tx:"http://devportal.koreapolyschool.com"},
+    {id:"#copy_1001",    tx:OvertimeTitle_1},
+    {id:"#copy_1002",    tx:OvertimeTitle_2},
+    {id:"#copy_1003",    tx:Overtime_date_1},
+    {id:"#copy_1004",    tx:Overtime_date_2},
+    {id:"#copy_1005",    tx:Overtime_date_3},
+    {id:"#copy_1006",    tx:expenTitle},
+    {id:"#copy_301",     tx:"kps_antony.lim"},
+    {id:"#copy_302",     tx:"1111"},
+    {id:"#copy_305",     tx:"59010232"},
+    {id:"#copy_306",     tx:"59010232"},
+    {id:"#copy_401",     tx:"192.168.100.116"},
+    {id:"#copy_402",     tx:"255.255.255.0"},
+    {id:"#copy_403",     tx:"192.168.100.1"},
+    {id:"#copy_404",     tx:"192.168.100.222"},
+    {id:"#copy_405",     tx:"8.8.4.4"}
+  ];
+
+  cpLst.forEach(function(item){
+    var $el = $(item.id);
+    if(!$el.length) return;
+    $el.attr({'href':'javascript:;','data-clipboard-action':'copy','data-clipboard-text':item.tx});
+    var cb = new Clipboard(item.id);
+    cb.on('success', function(){ showToast(item.tx); });
+  });
+
+  // aclip 처리 (경로 복사)
+  $(".aclip").each(function(i){
+    $(this).attr('id','aCopy_w'+i);
+    var cb2 = new Clipboard('#aCopy_w'+i);
+    cb2.on('success', function(e){ showToast(e.text); });
+  });
+
+  // 탭① work_list 안의 clip-inline aclip도 처리
+  $(".clip-inline.aclip").each(function(i){
+    var uid = 'wClip_'+i;
+    $(this).attr('id', uid);
+    var cb3 = new Clipboard('#'+uid);
+    cb3.on('success', function(e){ showToast(e.text); });
+  });
+
+  // 앵커 링크 스무스 스크롤
+  $(".side-link").on("click", function(e){
+    var href = $(this).attr("href");
+    var $t = $(href);
+    if($t.length){
+      e.preventDefault();
+      $("html, body").animate({scrollTop: $t.offset().top - 70}, 300);
+    }
+  });
+});
+
+// ── 토스트 ──
+var toastTimer;
+function showToast(txt){
+  var $t = $("#toast");
+  var short = txt.length > 40 ? txt.slice(0,40)+"…" : txt;
+  $t.text("복사됨 ✓  " + short);
+  $t.addClass("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ $t.removeClass("show"); }, 1800);
+}
+
+// ── 탭 전환 ──
+function switchTab(name, btn){
+  _activeTab = name;
+  $(".tab-panel").removeClass("active");
+  $(".tab-btn").removeClass("active");
+  $("#tab-"+name).addClass("active");
+  $(btn).addClass("active");
+  $("#search-panel").removeClass("visible");
+  $("#search-box").val("");
+  // 탭① 일때만 사이드 메뉴 표시
+  $("#side-nav").css("display", name==="work" ? "flex" : "none");
+}
+
+// ── 카드 토글 ──
+function toggleCard(head){
+  var $card = $(head).closest(".prj-card");
+  $card.toggleClass("collapsed");
+}
+
+// ── 검색 ──
+var _activeTab = "work"; // 현재 활성 탭 추적
+// 검색 인덱스 빌드 (링크 텍스트 + href 수집)
+var searchIndex = [];
+function buildIndex(){
+  if(searchIndex.length) return;
+  // 탭① 링크
+  $("#tab-work a[href]").each(function(){
+    var $a = $(this);
+    var txt = $a.text().trim();
+    var href = $a.attr("href");
+    if(!txt || href === "javascript:;" || href === "#") return;
+    var cat = $a.closest(".prj-card").find(".h-title").text().trim() || "";
+    searchIndex.push({txt: txt, href: href, cat: cat});
+  });
+  // clip-inline (경로)
+  $(".clip-inline.aclip").each(function(){
+    var txt = $(this).text().trim();
+    var val = $(this).attr("data-clipboard-text") || "";
+    searchIndex.push({txt: txt, href: null, clipVal: val, cat: "경로 복사"});
+  });
+}
+
+function doSearch(q){
+  q = q.trim();
+  if(!q){
+    $("#search-panel").removeClass("visible");
+    $(".tab-panel").removeClass("active");
+    $("#tab-"+_activeTab).addClass("active");
+    $("#side-nav").css("display", _activeTab==="work" ? "flex" : "none");
+    return;
+  }
+  buildIndex();
+  var results = searchIndex.filter(function(item){
+    return item.txt.toLowerCase().indexOf(q.toLowerCase()) >= 0
+        || (item.href && item.href.toLowerCase().indexOf(q.toLowerCase()) >= 0)
+        || item.cat.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+  }).slice(0, 30);
+
+  var html = "";
+  if(!results.length){
+    html = '<div class="search-empty">검색 결과가 없습니다</div>';
+  } else {
+    results.forEach(function(r){
+      html += '<div class="search-item">';
+      html += '<span class="si-cat">'+escHtml(r.cat||"")+'</span>';
+      if(r.href){
+        html += '<a href="'+escHtml(r.href)+'" target="_blank">'+escHtml(r.txt)+'</a>';
+      } else {
+        html += '<span style="cursor:pointer;color:var(--red)" onclick="navigator.clipboard.writeText(\''+escJs(r.clipVal||"")+'\').then(function(){showToast(\''+escJs(r.clipVal||"")+'\')})">📁 '+escHtml(r.txt)+'</span>';
+      }
+      html += '</div>';
+    });
+  }
+  $("#search-results").html(html);
+  $("#search-panel").addClass("visible");
+  $(".tab-panel").removeClass("active");
+}
+
+function escHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function escJs(s){ return s.replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+
+// ESC 닫기
+$(document).on("keydown", function(e){
+  if(e.key === "Escape"){
+    $("#search-box").val("");
+    $("#search-panel").removeClass("visible");
+    $(".tab-panel").removeClass("active");
+    $("#tab-"+_activeTab).addClass("active");
+    $("#side-nav").css("display", _activeTab==="work" ? "flex" : "none");
+  }
+});
+</script>
+
+</body>
+</html>
+>>>>>>> 6f5bfb989bfefac176fa223306a4a9601efff0e8
